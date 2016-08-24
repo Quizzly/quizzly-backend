@@ -1,0 +1,241 @@
+@import 'vars.less';
+
+button, .button {
+  padding: 15px 20px;
+  .greenBlueGradient;
+  color: white;
+  .mont;
+  .pointer;
+  .round;
+  .outerShadow;
+  font-weight: 700;
+  border: none;
+}
+
+.gradientBody {
+  width: 100vw;
+  height: 100vh;
+  .greenBlueGradient;
+  .white;
+}
+
+.nowrap { white-space: nowrap; }
+
+.addEntityButton {
+  .pointer;
+  .outerShadow;
+  width: 240px;
+  .lightBlueBackground;
+  .p;
+  font-weight: 500;
+  .round;
+  vertical-align: top;
+  display: inline-block;
+  .p10;
+  .alignC;
+  &:hover {
+    background-color: darken(@lightBlue, 5%);
+  }
+}
+
+.mainPanel {
+  .outerShadow;
+  width: 260px;
+  .whiteBackground;
+  .p;
+  .mr20;
+  .round;
+  vertical-align: top;
+  display: inline-block;
+  // max-height: 100%;
+
+  .item {
+    .p10;
+    .small;
+    .borderBottom;
+    font-size: 13px;
+    white-space: normal;
+    overflow: auto;
+    &:hover {
+      .lightestGrayBackground;
+    }
+  }
+
+  .footer {
+    margin-top: -1px;
+    .roundBottom;
+    .borderTop;
+    .lightGreenBackground;
+    .p10;
+  }
+}
+
+.footerButton {
+  .alignC;
+  .pointer;
+  margin-top: -1px;
+  .roundBottom;
+  .borderTop;
+  .lightGreenBackground;
+  .p10;
+  font-weight: 500;
+  &:hover {
+    background-color: darken(@lightGreen, 5%) !important;
+  }
+}
+
+.studentFooterButton {
+  .alignC;
+  .pointer;
+  margin-top: -1px;
+  .roundBottom;
+  .borderTop;
+  .lightBlueBackground;
+  .p10;
+  font-weight: 500;
+  &:hover {
+    background-color: darken(@lightBlue, 5%);
+  }
+}
+
+.avatar {
+  background-image: url("http://i1197.photobucket.com/albums/aa429/mommyssweetthings/Ellie%20Jane/profile-picture-gold5.png~original");
+  background-position: center;
+  background-size: 120% auto;
+  width: 44px;
+  height: 44px;
+}
+
+.greenButton {
+  .alignC;
+  .pointer;
+  .round;
+  .border;
+  .borderTop;
+  .lightGreenBackground;
+  .p10;
+  flex-shrink: 0;
+  &:hover {
+    background-color: darken(@lightGreen, 5%) !important;
+  }
+}
+
+.plusButton {
+  .greenButton;
+  font-weight: 500;
+  width: 26px;
+}
+
+
+#studentQuestionContainer {
+  .gradientBody;
+  overflow: scroll;
+
+  #logo {
+    padding: 15px;
+    width: 45px;
+    .pointer;
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  #timer {
+    .floatR;
+    padding-top: 10px;
+    padding-right: 15px;
+    font-family: Roboto-Thin;
+    font-weight: 100;
+    font-size: 48px;
+    color: @white;
+  }
+
+  #studentQuestion {
+    max-width: 640px;
+    .round;
+    background-color: rgba(0,0,0,0.15);
+    .outerShadow;
+    .centerBlock;
+    position: relative;
+    .width100;
+    margin-bottom:40px;
+    padding: 40px;
+
+    .quizTitle {
+      .mont;
+      .alignC;
+      font-size: 20px;
+      font-weight: 700;
+      .pb20;
+    }
+
+    .question {
+      .alignC;
+      .roboto;
+      font-size: 26px;
+      font-weight: 200;
+      .pb40;
+    }
+
+    .questionBorder {
+      width: 100%;
+      height: 2px;
+      background-color: white;
+      margin-bottom: 20px;
+    }
+
+    .answerRow {
+      .roboto;
+      font-size: 22px;
+      font-weight: 200;
+    }
+
+    .answer {
+      margin-left: 7px;
+      .p10;
+      .pointer;
+    }
+
+    .selected {
+      .round;
+      background-color: rgba(255,255,255,0.2);
+      border: 2px solid white;
+    }
+
+    .freeResponse {
+      .roboto;
+      font-size: 22px;
+      font-weight: 200;
+      width: 100%;
+      background: none;
+      border: 2px solid white;
+      .round;
+      resize: none;
+      box-sizing: border-box;
+      height: 128px;
+      .p10;
+      .placeholder(@white);
+    }
+
+    .charCount {
+      font-weight: 200;
+      .roboto;
+      font-size: 12px;
+      float: right;
+      margin-top: 7px;
+    }
+
+    .submit {
+      .mt10;
+      .mont;
+      .alignC;
+      font-size: 17px;
+      font-weight: 700;
+      .pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
