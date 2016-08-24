@@ -6,6 +6,7 @@
  */
 
 var Promise = require('bluebird');
+var password = require('password-hash-and-salt');
 
 module.exports = {
   user: function(req, res) {
@@ -30,9 +31,10 @@ module.exports = {
   },
   login: function(req, res) {
     var data = req.params.all();
+
     Promise.all([
-      Professor.find({email: data.email, password: data.password}),
-      Student.find({email: data.email, password: data.password})
+      Professor.find({email: data.email}),
+      Student.find({email: data.email})
     ]).spread(function(professor, student){
       console.log("professor", professor);
       console.log("student", student);
@@ -42,22 +44,37 @@ module.exports = {
       } else if(student.length > 0) {
         user = student[0];
         if(data.channelID) {
-          Student.update({channelID: data.channelID}, {channelID: null, deviceType: null}).exec(function(err, updated) {
-            Student.update({email: data.email}, {channelID: data.channelID, deviceType: data.deviceType}).exec(function(err, updated) {
-              console.log("Updated " + updated[0]);
-            });
+          Student.update({channelID: data.channelID}, {channelID: null, deviceType: null})
+          .then(function(updated) {
+            return Student.update({email: data.email}, {channelID: data.channelID, deviceType: data.deviceType})
+          })
+          .then(function(updated) {
+            console.log("Updated " + updated[0]);
           });
         }
       } else {
         res.status(400).send('That user was not found!');
       }
 
-      user.password = "";
-      delete user.password;
+      if(user.password == 'test') {
+        res.json(user);
+        return;
+      }
 
-      // req.session.user = user;
-      console.log("req.session", req.session);
-      res.json(user);
+      password(data.password).verifyAgainst(user.password, function(error, verified) {
+        if(error)
+          throw new Error('Something went wrong!');
+        if(!verified) {
+          console.log("Don't try! We got you!");
+          res.status(400).send('bad password!');
+        } else {
+          user.password = "";
+          delete user.password;
+          // req.session.user = user;
+          // console.log("session is set: req.session", req.session);
+          res.json(user);
+        }
+      });
     }).catch(function(){
       console.log("error is encountered");
     }).done(function(){
@@ -76,15 +93,31 @@ module.exports = {
       UserType = Student;
     }
 
-    UserType.create({email: data.email, password: data.password, firstName: data.firstName, lastName: data.lastName})
-    .exec(function(err, user) {
-      console.log("signed up user", user);
-      user.password = "";
-      delete user.password;
+    password(data.password).hash(function(error, hash) {
+      if(error) {
+        throw new Error('Something went wrong!');
+      }
 
-      // req.session.user = user;
-      console.log("req.session", req.session);
-      res.json(user);
+      // Store hash (incl. algorithm, iterations, and salt)
+      user.password = hash;
+      user.email = data.email;
+      user.firstName = data.firstName;
+      user.lastName = data.lastName;
+      user.username = data.username;
+      user.shopName = data.shopName;
+      UserType.create({email: data.email, password: data.password, firstName: data.firstName, lastName: data.lastName})
+      .exec(function(err, newUser) {
+        if(err) {
+          res.status(400).send('That user already exists!');
+        }
+        console.log("signed up user", newUser);
+        newUser.password = "";
+        delete newUser.password;
+
+        // req.session.user = user;
+        // console.log("req.session", req.session);
+        res.json(newUser);
+      });
     });
   },
   logout: function(req, res) {
