@@ -21,42 +21,6 @@
  */
 
 module.exports.routes = {
-  '/': {
-    view: 'app'
-  },
-  '/entrance': {
-    view: 'app'
-  },
-  '/style': {
-    view: 'app'
-  },
-  '/studentlist': {
-    view: 'app'
-  },
-  '/p/courses': {
-    view: 'app'
-  },
-  '/p/quizzes': {
-    view: 'app'
-  },
-  '/p/metrics': {
-    view: 'app'
-  },
-  '/p/upload': {
-    view: 'app'
-  },
-  '/p/download': {
-    view: 'app'
-  },
-  '/s/quizzes': {
-    view: 'app'
-  },
-  '/s/metrics': {
-    view: 'app'
-  },
-  '/s/question/:questionId/:sectionId': {
-    view: 'app'
-  },
   'post /login': 'AuthController.login',
   'post /logout': 'AuthController.logout',
   'post /signup': 'AuthController.signup',

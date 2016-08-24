@@ -9,10 +9,10 @@ module.exports = {
   attributes: {
     // Primitives
     id: {
-   type: 'integer',
-   autoIncrement: true,
-   primaryKey: true,
-   unique: true
+      type: 'integer',
+      autoIncrement: true,
+      primaryKey: true,
+      unique: true
     },
     type: {
       type: 'string',
@@ -23,7 +23,8 @@ module.exports = {
       unique: true
     },
     password: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     studentId: {
       type: 'string'

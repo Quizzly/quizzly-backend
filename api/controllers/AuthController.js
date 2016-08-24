@@ -99,24 +99,26 @@ module.exports = {
       }
 
       // Store hash (incl. algorithm, iterations, and salt)
-      user.password = hash;
-      user.email = data.email;
-      user.firstName = data.firstName;
-      user.lastName = data.lastName;
-      user.username = data.username;
-      user.shopName = data.shopName;
-      UserType.create({email: data.email, password: data.password, firstName: data.firstName, lastName: data.lastName})
-      .exec(function(err, newUser) {
+      console.log("passwordHash::", hash);
+      var newUser = {
+        email: data.email,
+        password: hash.slice(0, -30),
+        // password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+      };
+      UserType.create(newUser)
+      .exec(function(err, user) {
         if(err) {
           res.status(400).send('That user already exists!');
         }
-        console.log("signed up user", newUser);
-        newUser.password = "";
-        delete newUser.password;
+        console.log("signed up user", user);
+        user.password = "";
+        delete user.password;
 
         // req.session.user = user;
         // console.log("req.session", req.session);
-        res.json(newUser);
+        res.json(user);
       });
     });
   },

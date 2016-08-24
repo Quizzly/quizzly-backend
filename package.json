@@ -33,7 +33,6 @@
     "rc": "1.0.1",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
-    "react-router": "^2.0.0",
     "sails": "~0.12.1",
     "sails-disk": "~0.10.9",
     "sails-memory": "^0.10.6",
