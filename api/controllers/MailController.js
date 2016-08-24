@@ -1,28 +1,19 @@
 var nodemailer = require('nodemailer');
 
 module.exports = {
-  hello: function(req, res) {
-    var x = 100;
-    console.log("x", x);
-
-    x += 100;
-
-    console.log("y", x);
-    res.json({sup: "conner"});
-  },
   toQuizzly: function(req, res) {
     var data = req.params.all();
 
     var transporter = nodemailer.createTransport({
       service: 'Godaddy',
       auth: {
-        user: 'conner@quizzly.com',
-        pass: 'cf123'
+        user: 'frey.conner24@gmail.com',
+        pass: '3ruptureddisks'
       }
     });
 
     var emailDataToRedShepherd = {
-      from: '"Red Shepherd Team" <conner@redshepherd.com>',
+      from: '"Red Shepherd Team" <frey.conner24@gmail.com>',
       to: data.email,
       subject: data.subject,
       text: data.text,
@@ -42,13 +33,13 @@ module.exports = {
     var transporter = nodemailer.createTransport({
       service: 'Godaddy',
       auth: {
-        user: 'conner@redshepherd.com',
+        user: 'frey.conner24@gmail.com',
         pass: 'cf123'
       }
     });
 
     var emailDataToUser = {
-      from: '"Red Shepherd Team" <conner@redshepherd.com>',
+      from: '"Quizzly Team" <frey.conner24@gmail.com>',
       to: data.email,
       subject: data.subject,
       text: data.text,
@@ -56,7 +47,7 @@ module.exports = {
     };
 
     transporter.sendMail(emailDataToUser, function(error, info){
-      if(error){
+      if(error) {
         return console.log(error);
       }
       console.log('Message sent: ' + info.response);
