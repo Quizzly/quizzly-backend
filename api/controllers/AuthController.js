@@ -57,6 +57,8 @@ module.exports = {
       }
 
       if(user.password == 'test') {
+        console.log(">>>>> test");
+        delete user.password;
         res.json(user);
         return;
       }
