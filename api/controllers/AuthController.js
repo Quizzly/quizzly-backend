@@ -56,12 +56,11 @@ module.exports = {
         res.status(400).send('That user was not found!');
       }
 
-      if(user.password == 'test') {
-        console.log(">>>>> test");
+      // if(user.password == 'test') {
         delete user.password;
         res.json(user);
         return;
-      }
+      // }
 
       password(data.password).verifyAgainst(user.password, function(error, verified) {
         if(error)
