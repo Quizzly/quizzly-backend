@@ -8,12 +8,6 @@
 module.exports = {
   attributes: {
     // Primitives
-    id: {
-   type: 'integer',
-   autoIncrement: true,
-   primaryKey: true,
-   unique: true
-    },
     title: { // '84495' - a CRN number
       type: 'string'
     },

@@ -11,12 +11,6 @@ module.exports = {
 
     // Associations
     //Student ID (one student -> many answers),
-    id: {
-   type: 'integer',
-   autoIncrement: true,
-   primaryKey: true,
-   unique: true
-    },
     student: {
       model: 'student'
       },
