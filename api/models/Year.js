@@ -9,7 +9,8 @@ module.exports = {
   attributes: {
     // Primitives
     year: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     // Methods
   }

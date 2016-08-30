@@ -9,7 +9,8 @@ module.exports = {
   attributes: {
     // Primitives
     season: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     // Methods
   }

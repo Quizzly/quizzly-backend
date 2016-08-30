@@ -9,10 +9,12 @@ module.exports = {
   attributes: {
     // Primitives
     season: {
-      model: 'season'
+      model: 'season',
+      required: true
     },
     year: {
-      model: 'year'
+      model: 'year',
+      required: true
     },
 
     // Methods
