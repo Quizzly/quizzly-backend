@@ -18,7 +18,6 @@ module.exports = {
     section: {
       model: 'section'
     },
-
     //Question ID (one question -> one answer),
     question: {
       model: 'question'

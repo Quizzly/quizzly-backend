@@ -100,11 +100,9 @@ module.exports = {
       }
 
       // Store hash (incl. algorithm, iterations, and salt)
-      console.log("passwordHash::", hash);
       var newUser = {
         email: data.email,
-        password: hash.slice(0, -30),
-        // password: data.password,
+        password: hash,
         firstName: data.firstName,
         lastName: data.lastName,
       };

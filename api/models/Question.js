@@ -9,7 +9,8 @@ module.exports = {
   attributes: {
     // Primitives
     text: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     type: {
       type: 'string',
@@ -18,7 +19,8 @@ module.exports = {
     },
 
     duration: {
-      type: 'integer'
+      type: 'integer',
+      defaultsTo: 30
     },
 
     // Associations

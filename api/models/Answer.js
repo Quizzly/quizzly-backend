@@ -15,7 +15,6 @@ module.exports = {
     },
     correct: {
       type: 'boolean',
-      defaultsTo: true
     },
     option: {
       type: 'string',

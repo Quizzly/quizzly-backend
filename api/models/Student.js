@@ -14,23 +14,32 @@ module.exports = {
     },
     email: {
       type: 'string',
-      unique: true
+      unique: true,
+      required: true
+    },
+    isEmailValidated: {
+      type: 'boolean',
+      defaultsTo: false
     },
     password: {
       type: 'string',
       required: true
     },
     studentId: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     firstName: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     lastName: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     school: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     channelID: {
       type: 'string'
