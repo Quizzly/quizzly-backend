@@ -10,21 +10,21 @@ var password = require('password-hash-and-salt');
 
 module.exports = {
   user: function(req, res) {
-    console.log("req.session", req.session);
+    sails.log.debug("req.session", req.session);
     if(req.session.user) {
-      console.log("session is set");
+      sails.log.debug("session is set");
       return res.json(req.session.user);
     } else {
-      console.log("session isn't set");
+      sails.log.debug("session isn't set");
     }
   },
   session: function(req, res) {
-    console.log("Session::req.session", req.session);
+    sails.log.debug("Session::req.session", req.session);
     if(req.session.user) {
-      console.log("session is set");
+      sails.log.debug("session is set");
       return res.json(req.session.user);
     } else {
-      console.log("redirect: session isn't set");
+      sails.log.debug("redirect: session isn't set");
       // return res.redirect('/entrance');
       res.status(400).send('No session');
     }
@@ -36,8 +36,8 @@ module.exports = {
       Professor.find({email: data.email}),
       Student.find({email: data.email})
     ]).spread(function(professor, student){
-      console.log("professor", professor);
-      console.log("student", student);
+      sails.log.debug("professor", professor);
+      sails.log.debug("student", student);
       var user = {};
       if(professor.length > 0) {
         user = professor[0];
@@ -49,7 +49,7 @@ module.exports = {
             return Student.update({email: data.email}, {channelID: data.channelID, deviceType: data.deviceType})
           })
           .then(function(updated) {
-            console.log("Updated " + updated[0]);
+            sails.log.debug("Updated " + updated[0]);
           });
         }
       } else {
@@ -66,31 +66,31 @@ module.exports = {
         if(error)
           throw new Error('Something went wrong!');
         if(!verified) {
-          console.log("Don't try! We got you!");
+          sails.log.debug("Don't try! We got you!");
           res.status(400).send('bad password!');
         } else {
           user.password = "";
           delete user.password;
           // req.session.user = user;
-          // console.log("session is set: req.session", req.session);
+          // sails.log.debug("session is set: req.session", req.session);
           res.json(user);
         }
       });
     }).catch(function(){
-      console.log("error is encountered");
+      sails.log.debug("error is encountered");
     }).done(function(){
-      console.log("promise call is done");
+      sails.log.debug("promise call is done");
     });
   },
   signup: function(req, res) {
     var data = req.params.all();
-    console.log(data);
+    sails.log.debug(data);
     var UserType = {};
     if(data.isProfessor == 'true' || data.isProfessor == 'YES') {
-      console.log("signed up professor");
+      sails.log.debug("signed up professor");
       UserType = Professor;
     } else {
-      console.log("signed up student");
+      sails.log.debug("signed up student");
       UserType = Student;
     }
 
@@ -111,12 +111,12 @@ module.exports = {
         if(err) {
           res.status(400).send('That user already exists!');
         }
-        console.log("signed up user", user);
+        sails.log.debug("signed up user", user);
         user.password = "";
         delete user.password;
 
         // req.session.user = user;
-        // console.log("req.session", req.session);
+        // sails.log.debug("req.session", req.session);
         res.json(user);
       });
     });
