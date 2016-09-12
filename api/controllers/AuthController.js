@@ -9,6 +9,77 @@ var Promise = require('bluebird');
 var password = require('password-hash-and-salt');
 
 module.exports = {
+  isStudentTest: function(req, res) {
+    return res.json(req.user);
+  },
+  isProfessorTest: function(req, res) {
+    return res.json(req.user);
+  },
+  isAuthenticatedTest: function(req, res) {
+    return res.json(req.user);
+  },
+  tokenLogin: function(req, res) {
+    const data = req.params.all();
+
+    if(!data.email || !data.password) {
+      return res.status(400).send('Bad request!');
+    }
+
+    return Promise.all([
+      Professor.findOne({email: data.email}),
+      Student.findOne({email: data.email})
+    ]).spread(function(professor, student){
+      sails.log.debug("professor", professor);
+      sails.log.debug("student", student);
+      var user = {};
+      if(professor) {
+        user = professor;
+      } else if(student) {
+        user = student;
+      } else {
+        return res.status(400).send('That user was not found!');
+      }
+      sails.log.debug('user', user);
+      return password(data.password).verifyAgainst(user.password, function(err, verified){
+        sails.log.debug('password verifyAgainst');
+        if(err || !verified) { return res.status('401').send('Not Authorized.'); }
+        const authToken = JWT.generateAuthToken();
+        const userPayload = {
+          id: user.id,
+          email: user.email,
+          authToken: authToken
+        }
+
+        sails.log.debug('userPayload', userPayload);
+
+        return JWT.encode(userPayload, function(err, jwt){
+          if(err || !jwt) { return res.status(400).send('Error occured in logging in.') }
+          if(professor) {
+            return Professor.update({id: user.id}, {authToken: authToken}).exec(function(err, updated){
+              if(err || !updated) { return res.status(400).send('Error occured in logging in.') }
+              else {
+                return res.cookie('jwt', jwt, { maxAge: 60*1000*60*24, httpOnly: true }).json({jwt: jwt});
+              }
+            });
+          } else if(student) {
+            return Student.update({id: user.id}, {authToken: authToken }).exec(function(err, updated){
+              if(err || !updated) { return res.status(400).send('Error occured in logging in.') }
+              else {
+
+                return res.cookie('jwt', jwt, { maxAge: 60*1000*60*24, httpOnly: true }).json({jwt: jwt});
+              }
+            });
+          }
+        });
+      });
+    }).catch(function(err){
+      sails.log.error(err);
+      sails.log.debug("error encountered in logging in");
+    }).done(function(){
+      sails.log.debug("promise call is done");
+    });
+  },
+
   user: function(req, res) {
     sails.log.debug("req.session", req.session);
     if(req.session.user) {

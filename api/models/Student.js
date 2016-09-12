@@ -47,6 +47,11 @@ module.exports = {
     deviceType: {
       type: 'string'
     },
+    authToken: {
+      type: 'string',
+      defaultsTo: ''
+    },
+
     // Associations
     sections: {
       collection: 'section',

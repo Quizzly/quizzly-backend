@@ -41,6 +41,10 @@ module.exports = {
       type: 'string',
       defaultsTo: ''
     },
+    authToken: {
+      type: 'string',
+      defaultsTo: ''
+    },
 
     // Associations
     courses: {
