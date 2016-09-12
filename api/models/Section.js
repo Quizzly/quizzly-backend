@@ -12,6 +12,9 @@ module.exports = {
       type: 'string',
       required: true
     },
+    alias: { // custom name given by professor
+      type: 'string',
+    },
 
     // Associations
     course: {

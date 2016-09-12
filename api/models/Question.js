@@ -22,6 +22,9 @@ module.exports = {
       type: 'integer',
       defaultsTo: 30
     },
+    lastAsked: {
+      type: 'datetime'
+    },
 
     // Associations
     quiz: {

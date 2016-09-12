@@ -205,7 +205,10 @@ module.exports = {
         }
       });
 
-      Question.findOne({id:question_id}).populate('answers').exec(function (err, question) {
+      Question
+      .findOne({id: question_id})
+      .populate('answers')
+      .exec(function (err, question) {
         if(err) {
           return res.json({error: res.negotiate(err)})
         }
