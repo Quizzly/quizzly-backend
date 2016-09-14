@@ -9,7 +9,7 @@
  */
 
 module.exports = function(req, res, next) {
-  const jwt = req.cookies.jwt || req.body.jwt ;
+  var jwt = req.cookies.jwt || req.body.jwt ;
   if(!jwt) { return res.status(401).send('Not Authorized.'); }
   return JWT.decode(jwt, function(err, decoded){
     if(err || !decoded || decoded.type !== 'STUDENT') { return res.status(401).send('Not Authorized.'); }
