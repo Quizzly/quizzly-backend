@@ -9,16 +9,7 @@ var Promise = require('bluebird');
 var password = require('password-hash-and-salt');
 
 module.exports = {
-  isStudentTest: function(req, res) {
-    return res.json(req.user);
-  },
-  isProfessorTest: function(req, res) {
-    return res.json(req.user);
-  },
-  isAuthenticatedTest: function(req, res) {
-    return res.json(req.user);
-  },
-  tokenLogin: function(req, res) {
+  login: function(req, res) {
     const data = req.params.all();
 
     // Ensure email and password fields exist
@@ -48,6 +39,7 @@ module.exports = {
         // Encode JWT
         return JWT.encode(user, function(err, jwt){
           if(err || !jwt) { return res.status(400).send('Error occured in logging in.') }
+
           // Set JWT as cookie for web and return the token for mobile
           return res.cookie('jwt', jwt).json({jwt: jwt});
         });
@@ -61,77 +53,10 @@ module.exports = {
   },
 
   user: function(req, res) {
-    sails.log.debug("req.session", req.session);
-    if(req.session.user) {
-      sails.log.debug("session is set");
-      return res.json(req.session.user);
-    } else {
-      sails.log.debug("session isn't set");
-    }
+    return res.json(req.user);
   },
   session: function(req, res) {
-    sails.log.debug("Session::req.session", req.session);
-    if(req.session.user) {
-      sails.log.debug("session is set");
-      return res.json(req.session.user);
-    } else {
-      sails.log.debug("redirect: session isn't set");
-      // return res.redirect('/entrance');
-      res.status(400).send('No session');
-    }
-  },
-  login: function(req, res) {
-    var data = req.params.all();
-
-    Promise.all([
-      Professor.find({email: data.email}),
-      Student.find({email: data.email})
-    ]).spread(function(professor, student){
-      sails.log.debug("professor", professor);
-      sails.log.debug("student", student);
-      var user = {};
-      if(professor.length > 0) {
-        user = professor[0];
-      } else if(student.length > 0) {
-        user = student[0];
-        if(data.channelID) {
-          Student.update({channelID: data.channelID}, {channelID: null, deviceType: null})
-          .then(function(updated) {
-            return Student.update({email: data.email}, {channelID: data.channelID, deviceType: data.deviceType})
-          })
-          .then(function(updated) {
-            sails.log.debug("Updated " + updated[0]);
-          });
-        }
-      } else {
-        res.status(400).send('That user was not found!');
-      }
-
-      // if(user.password == 'test') {
-        delete user.password;
-        res.json(user);
-        return;
-      // }
-
-      password(data.password).verifyAgainst(user.password, function(error, verified) {
-        if(error)
-          throw new Error('Something went wrong!');
-        if(!verified) {
-          sails.log.debug("Don't try! We got you!");
-          res.status(400).send('bad password!');
-        } else {
-          user.password = "";
-          delete user.password;
-          // req.session.user = user;
-          // sails.log.debug("session is set: req.session", req.session);
-          res.json(user);
-        }
-      });
-    }).catch(function(){
-      sails.log.debug("error is encountered");
-    }).done(function(){
-      sails.log.debug("promise call is done");
-    });
+    return res.json(req.user);
   },
   signup: function(req, res) {
     var data = req.params.all();
@@ -165,15 +90,20 @@ module.exports = {
         sails.log.debug("signed up user", user);
         user.password = "";
         delete user.password;
-
-        // req.session.user = user;
-        // sails.log.debug("req.session", req.session);
         res.json(user);
       });
     });
   },
   logout: function(req, res) {
-    // delete req.session.user;
-    res.ok();
+    return res.cookie('jwt', '').ok();
+  },
+  isStudentTest: function(req, res) {
+    return res.json(req.user);
+  },
+  isProfessorTest: function(req, res) {
+    return res.json(req.user);
+  },
+  isAuthenticatedTest: function(req, res) {
+    return res.json(req.user);
   }
 };
