@@ -10,8 +10,8 @@
  *
  */
 
-module.exports = {
 
+module.exports = {
   conections: {
     prodMongo: {
       adapter: 'sails-mongo',
