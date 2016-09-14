@@ -47,6 +47,7 @@ module.exports = {
     deviceType: {
       type: 'string'
     },
+
     // Associations
     sections: {
       collection: 'section',

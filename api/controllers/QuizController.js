@@ -29,9 +29,9 @@ module.exports = {
     var data = req.params.all();
 /*
     Student.findOne({email: data.student}).exec(function(err, s) {
-      console.log("id: " + s.id);
+      sails.log.debug("id: " + s.id);
       StudentAnswer.find({student: s.id, quiz: data.quiz}).populate('question').exec(function(err, answers) {
-        console.log("answers: " + answers);
+        sails.log.debug("answers: " + answers);
         var questions = [];
         var dict = {};
         answers.forEach(function(answer) {
@@ -115,7 +115,7 @@ module.exports = {
       }
 
     ], function(err) {
-      console.log(response);
+      sails.log.debug(response);
       return res.send(200, response);
     });
   },
@@ -125,7 +125,7 @@ module.exports = {
     var data = req.params.all();
 
     StudentAnswer.find({question: data.question_id}).sort('answer ASC').exec(function(err, student_answers) {
-      console.log(student_answers);
+      sails.log.debug(student_answers);
       var previous = -1;
       var i = 0;
       var num_answers = [];
