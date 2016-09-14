@@ -13,9 +13,5 @@ module.exports = {
     jwt.verify(token, secret, function(err, payload){
       next(err, payload);
     });
-  },
-
-  generateAuthToken() {
-    return Math.random().toString(36).substr(2);
   }
 }
