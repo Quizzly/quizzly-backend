@@ -61,21 +61,19 @@ module.exports = {
     });
   },
 
-  //One parameter id
-  //Asks ALL students this question
-  //Only used in PowerPoint
+  // This route is used by professors to as questions params: (questionId as question, sectionId as section)
   ask: function(req, res) {
     sails.log.debug('Asking a question');
     var data = req.params.all();
-    var question_id = data.question;
-    var section_id = data.section;
+    var questionId = data.question;
+    var sectionId = data.section;
 
-    if(!question_id || !section_id) { return res.status(400).send('Bad Request!'); }
+    if(!questionId || !sectionId) { return res.status(400).send('Bad Request!'); }
 
     // Find the question and section and make sure they exists
     return Promise.all([
-      Question.findOne({id: question_id}).populate('answers'),
-      Section.findOne({id: section_id})
+      Question.findOne({id: questionId}).populate('answers'),
+      Section.findOne({id: sectionId})
     ]).spread(function(question, section){
       sails.log.debug('question', question);
       sails.log.debug('section', section);
@@ -255,6 +253,8 @@ module.exports = {
     });
   },
 
+  // This route is used by students to answer questions parameters(answerKey, answerId as answer)
+  // note: the 'answerKey' maps to the question being answered.
   answer: function(req, res) {
     var data = req.params.all();
     var answerKey = data.answerKey;
