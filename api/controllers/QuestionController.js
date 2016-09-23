@@ -21,7 +21,7 @@ var Pusher = require('pusher');
 
  // Create a push object
  var urbanAirshipPush = new UrbanAirshipPush(config);
-var Promise = require('bluebird');
+ var Promise = require('bluebird');
 
 module.exports = {
    destroyQuestionsByIds: function(req, res) {
@@ -65,98 +65,27 @@ module.exports = {
   //Asks ALL students this question
   //Only used in PowerPoint
   ask: function(req, res) {
-    //sails.log.debug("ask api hit");
+    sails.log.debug('Asking a question');
     var data = req.params.all();
-    var question_id = data.id;
-    var section_id = 3;
+    var question_id = data.question;
+    var section_id = data.section;
 
-    sails.log.debug("question id " + question_id);
-    sails.log.debug("section id " + section_id);
+    if(!question_id || !section_id) { return res.status(400).send('Bad Request!'); }
 
-    var pusher = new Pusher({
-      appId: '198096',
-      key: '638c5913fb91435e1b42',
-      secret: 'bb4f3412beab5121f288',
-      encrypted: true
-    });
-
-    sails.log.debug(">>>>>>>>>pusher is triggered", question_id);
-
-    pusher.trigger('test_channel', 'my_event', {
-      "questionId": question_id,
-      "sectionId": section_id
-    });
-
-    Question.findOne({id:data.id}).populate('answers').exec(function (err, question) {
-      if(err) {
-        return res.json({
-          error: res.negotiate(err)
-        });
-      } if (!question) {
-        return res.json({
-          error: 'Question not found'
-        });
-      }
-  //    var answers = question.anwers;
-      sails.log.debug(question.answers.length);
-      var pushInfo = {
-        "audience": "all",
-        "notification": {
-           "alert": "Question Available",
-           "android": {
-             "extra": {
-               "question": question.text,
-               "quiz_id": question.quiz,
-               "quest_id": question.id,
-               "type": question.type,
-               "time_limit": question.duration,
-               "num_answers": question.answers.length
-             }
-           },
-           "ios": {
-             "extra": {
-               "question": question.text,
-               "quiz_id": question.quiz,
-               "quest_id": question.id,
-               "type": question.type,
-               "time_limit": question.duration,
-               "num_answers": question.answers.length
-            //   "answers": []
-             }
-           }
-        },
-        "device_types": ["android", "ios"]
-      };
-      if(question.answers.length != 0) {
-        pushInfo.notification.android.extra.answer0 = question.answers[0].text;
-        pushInfo.notification.android.extra.answer1 = question.answers[1].text;
-        pushInfo.notification.ios.extra.answer0 = question.answers[0].text;
-        pushInfo.notification.ios.extra.answer1 = question.answers[1].text;
-        if(question.answers.length > 2) {
-          pushInfo.notification.android.extra.answer2 = question.answers[2].text;
-          pushInfo.notification.ios.extra.answer2 = question.answers[2].text;
-        }
-        if(question.answers.length > 3) {
-          pushInfo.notification.android.extra.answer3 = question.answers[3].text;
-          pushInfo.notification.ios.extra.answer3 = question.answers[3].text;
-        }
-      }
-
-
-      sails.log.debug(pushInfo);
-      urbanAirshipPush.push.send(pushInfo, function (err, data) {
-          if (err) {
-              // Handle error
-              sails.log.debug(err);
-              return res.json({ error: "Push not sent"});
-          }
-          sails.log.debug(data);
-          return res.json({
-            success: "Push sent"
-          });
-
+    // Find the question and section and make sure they exists
+    return Promise.all([
+      Question.findOne({id: question_id}).populate('answers'),
+      Section.findOne({id: section_id})
+    ]).spread(function(question, section){
+      sails.log.debug('question', question);
+      sails.log.debug('section', section);
+      if(!question || ! section) { return res.status(400).send('Bad Request!'); }
+      var key = OpenQuestions.add(question);
+      sails.sockets.broadcast('section-'+section.id, 'question', {
+        question: question,
+        answerKey: key
       });
-
+      return res.json({answerKey: key, question: question});
     });
   },
 
@@ -164,6 +93,7 @@ module.exports = {
   //Asks users in the specified section the question
   askWithSection: function(req, res) {
     var data = req.params.all();
+
     var question_id = data.question;
     var section_id = data.section;
 
@@ -325,56 +255,28 @@ module.exports = {
     });
   },
 
-  //Used by iOS and Android to answer multiple choice questions
   answer: function(req, res) {
-    sails.log.debug("Question ID: " + req.param('quest_id'));
-    sails.log.debug("Quiz ID: " + req.param('quiz_id'));
-    sails.log.debug("User Email: " + req.param('user_email'));
-    sails.log.debug("Answer: " + req.param('answer'));
+    var data = req.params.all();
+    var answerKey = data.answerKey;
+    var answerId = data.answer;
+    var student = req.user;
 
-    Student.findOne({email: req.param('user_email')}).exec(function (err, student) {
-      if(err) {
-        return res.json({
-          error: res.negotiate(err)
-        });
-      } if (!student) {
-        return res.json({
-          error: 'Student not found'
-        });
-      }
-      sails.log.debug("found student");
-      Answer.findOne({text: req.param('answer'), question: req.param('quest_id')}).exec(function (err, answer) {
-        if(err) {
-          sails.log.debug("answer error");
-          return res.json({
+    if(!answerKey || !answerId || !student) { return res.status(400).send('Bad Request'); }
 
-            error: res.negotiate(err)
-          });
-        } if (!answer) {
-          sails.log.debug("answer not found");
-          return res.json({
+    var question = OpenQuestions.get(answerKey);
 
-            error: 'Student not found'
-          });
-        }
-        var data = {
-          student: student.id,
-          question: req.param('quest_id'),
-          answer: answer.id,
-          quiz: req.param('quiz_id'),
-        };
-        StudentAnswer.create(data).exec(function(err, studentAnswer) {
+    if(!question) { return res.status(401).send('Invalid Answer Key'); }
 
-          if(err) {
-            sails.log.debug("error");
-            return res.json({
-              hello: 'did it work'
-            });
-          }
-          sails.log.debug("created")
-          return res.json(studentAnswer);
-        });
-      });
+
+    var data = {
+      student: student.id,
+      question: question.id,
+      answer: answerId
+    };
+
+    StudentAnswer.create(data).exec(function(err, studentAnswer){
+      if(err || !studentAnswer) { return res.status(400).send('something went wrong.'); }
+      return res.json(studentAnswer);
     });
   },
 

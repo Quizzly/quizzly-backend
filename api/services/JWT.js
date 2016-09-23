@@ -3,15 +3,15 @@ var jwt = require('jsonwebtoken');
 var secret = sails.config.session.secret;
 
 module.exports = {
-  encode(payload, next) {
+  encode: function(payload, next) {
     jwt.sign(payload, secret, { expiresIn: '1d' }, function(err, token) {
       next(err, token);
     });
   },
 
-  decode(token, next) {
+  decode: function(token, next) {
     jwt.verify(token, secret, function(err, payload){
       next(err, payload);
     });
   }
-}
+};
