@@ -81,189 +81,35 @@ module.exports = {
       var key = OpenQuestions.add(question);
       sails.sockets.broadcast('section-'+section.id, 'question', {
         question: question,
-        answerKey: key
+        questionKey: key
       });
-      return res.json({answerKey: key, question: question});
+      return res.json({questionKey: key, question: question});
     });
   },
 
-  //Two parameters, question_id and section_id
-  //Asks users in the specified section the question
-  askWithSection: function(req, res) {
+  getOpenQuestion: function(req, res) {
     var data = req.params.all();
+    var questionKey = data.questionKey;
 
-    var question_id = data.question;
-    var section_id = data.section;
+    if(!questionKey) { return res.status(400).send('Bad Request!'); }
 
-    sails.log.debug("question id " + question_id);
-    sails.log.debug("section id " + section_id);
+    var data = OpenQuestions.get(questionKey);
 
-    var pusher = new Pusher({
-      appId: '198096',
-      key: '638c5913fb91435e1b42',
-      secret: 'bb4f3412beab5121f288',
-      encrypted: true
-    });
+    return (data) ? res.json(data) : res.status(404).send('Question not found!');
 
-    sails.log.debug(">>>>>>>>>pusher is triggered", data.question);
-
-    pusher.trigger('test_channel', 'my_event', {
-      "questionId": data.question,
-      "sectionId": data.section
-    });
-
-    Section.findOne({id: section_id}).populate('students').exec(function(err, section) {
-      if(err) {
-        return res.json({error: res.negotiate(err)})
-      }
-      if(!section) {
-        return res.json({error: 'Section not found'});
-      }
-      var ios_channels = [];
-      var android_channels = [];
-
-      section.students.forEach(function(student) {
-        if(student.deviceType != null && student.channelID != null) {
-          if(student.deviceType == "ios") {
-            ios_channels.push(student.channelID);
-          }
-          else if(student.deviceType == "android"){
-            android_channels.push(student.channelID);
-          }
-        }
-      });
-
-      Question
-      .findOne({id: question_id})
-      .populate('answers')
-      .exec(function (err, question) {
-        if(err) {
-          return res.json({error: res.negotiate(err)})
-        }
-        if(!question) {
-          return res.json({error: 'Question not found'});
-        }
-
-        var android_push = {
-          "audience": {
-            android_channel: android_channels
-          },
-          "notification": {
-             "alert": "Question Available",
-             "android": {
-               "extra": {
-                 "question": question.text,
-                 "quiz_id": question.quiz,
-                 "quest_id": question.id,
-                 "type": question.type,
-                 "time_limit": question.duration,
-                 "num_answers": question.answers.length
-               }
-             }
-          },
-          "device_types": "all"
-        };
-
-        var ios_push = {
-          "audience": {
-            "ios_channel": ios_channels
-          },
-          "notification": {
-             "alert": "Question Available",
-             "ios": {
-               "extra": {
-                 "question": question.text,
-                 "quiz_id": question.quiz,
-                 "quest_id": question.id,
-                 "type": question.type,
-                 "time_limit": question.duration,
-                 "num_answers": question.answers.length
-               }
-             }
-          },
-          "device_types": "all"
-        };
-
-        for(var i = 0; i < question.answers.length; i++) {
-          android_push.notification.android.extra["answer" + i] = question.answers[i].text;
-          ios_push.notification.ios.extra["answer" + i] = question.answers[i].text;
-        }
-
-        if(ios_channels.length == 0 && android_channels.length == 0) {
-          return res.json({error: "There are no devices for that section"});
-        }
-
-        ios_fail = false;
-        android_fail = false;
-        async.series([
-          function(callback) {
-            if(android_channels.length != 0) {
-              urbanAirshipPush.push.send(android_push, function(android_err, android_data) {
-                if(android_err) {
-                  sails.log.debug("android error!");
-                  android_fail = true
-                }
-                else {
-                  sails.log.debug("android success!");
-                }
-              });
-            }
-
-            callback();
-          },
-
-          function(callback) {
-            if(ios_channels.length != 0) {
-              urbanAirshipPush.push.send(ios_push, function(ios_err, ios_data) {
-                if(ios_err) {
-                  sails.log.debug("ios error!");
-                  ios_fail = true;
-                } else {
-                  sails.log.debug("ios success!");
-                }
-              });
-            }
-
-            callback();
-          }
-        ], function(err) {
-          if(!ios_fail && !android_fail) {
-            return res.json({
-              ios: "success",
-              android: "success"
-            });
-          } else if(ios_fail && !android_fail) {
-            return res.json({
-              ios: "fail",
-              android: "success"
-            });
-          } else if(!ios_fail && android_fail) {
-            return res.json({
-              ios: "success",
-              android: "fail"
-            });
-          } else {
-            return res.json({
-              ios: "fail",
-              android: "fail"
-            });
-          }
-        });
-      });
-    });
   },
 
-  // This route is used by students to answer questions parameters(answerKey, answerId as answer)
-  // note: the 'answerKey' maps to the question being answered.
+  // This route is used by students to answer questions parameters(questionKey, answerId as answer)
+  // note: the 'questionKey' maps to the question being answered.
   answer: function(req, res) {
     var data = req.params.all();
-    var answerKey = data.answerKey;
+    var questionKey = data.questionKey;
     var answerId = data.answer;
     var student = req.user;
 
-    if(!answerKey || !answerId || !student) { return res.status(400).send('Bad Request'); }
+    if(!questionKey || !answerId || !student) { return res.status(400).send('Bad Request'); }
 
-    var question = OpenQuestions.get(answerKey);
+    var question = OpenQuestions.get(questionKey);
 
     if(!question) { return res.status(401).send('Invalid Answer Key'); }
 
