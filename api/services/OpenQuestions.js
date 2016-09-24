@@ -18,11 +18,12 @@ module.exports = {
     return key;
   },
   get: function(questionKey){
-    var question = questions.get(questionKey);
+    var data = questions.get(questionKey);
     var ttl = questions.getTtl(questionKey);
-    if(!question || !ttl) { return null; }
+    if(!data || !ttl) { return null; }
     return {
-      question: question,
+      question: data.question,
+      answers: data.answers,
       expireTime: ttl
     };
   }

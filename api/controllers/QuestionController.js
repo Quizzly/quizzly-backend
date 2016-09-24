@@ -108,14 +108,13 @@ module.exports = {
 
     if(!questionKey || !answerId || !student) { return res.status(400).send('Bad Request'); }
 
-    var question = OpenQuestions.get(questionKey);
+    var questionData = OpenQuestions.get(questionKey);
 
-    if(!question) { return res.status(401).send('Invalid Answer Key'); }
-
+    if(!questionData || !questionData.question) { return res.status(401).send('Invalid Answer Key'); }
 
     var data = {
       student: student.id,
-      question: question.id,
+      question: questionData.question.id,
       answer: answerId
     };
 
