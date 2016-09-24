@@ -1,4 +1,3 @@
-var password = require('password-hash-and-salt');
 var jwt = require('jsonwebtoken');
 var secret = sails.config.session.secret;
 
