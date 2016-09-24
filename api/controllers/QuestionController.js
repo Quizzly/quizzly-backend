@@ -80,10 +80,9 @@ module.exports = {
       if(!question || ! section) { return res.status(400).send('Bad Request!'); }
       var questionKey = OpenQuestions.add(question);
       sails.sockets.broadcast('section-'+section.id, 'question', {
-        question: question,
         questionKey: questionKey
       });
-      return res.json({questionKey: key });
+      return res.json({questionKey: questionKey });
     });
   },
 
