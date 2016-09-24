@@ -18,12 +18,16 @@
 
 
 module.exports.policies = {
-  '*': 'isAuthenticated',
+  // '*': 'isAuthenticated',
 
   AuthController: {
     isStudentTest: ['isStudent'],
     isProfessorTest: ['isProfessor'],
     login: [],
     signup: []
+  },
+
+  QuestionController: {
+    answer: ['isStudent']
   }
 };
