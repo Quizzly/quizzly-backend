@@ -21,10 +21,12 @@ module.exports = {
     var data = questions.get(questionKey);
     var ttl = questions.getTtl(questionKey);
     if(!data || !ttl) { return null; }
+    var expireDate = new Date(ttl);
+    var timeRemaing = (expireDate - Date.now()) / 1000;
     return {
       question: data.question,
       answers: data.answers,
-      expireTime: ttl
+      timeRemaining: timeRemaing
     };
   }
 };

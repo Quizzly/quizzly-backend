@@ -110,7 +110,7 @@ module.exports = {
 
     var questionData = OpenQuestions.get(questionKey);
 
-    if(!questionData || !questionData.question) { return res.status(401).send('Invalid Answer Key'); }
+    if(!questionData || !questionData.question) { return res.status(401).send('Question Not Found!'); }
 
     var data = {
       student: student.id,
