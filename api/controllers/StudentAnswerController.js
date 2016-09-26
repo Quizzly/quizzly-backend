@@ -43,22 +43,22 @@ module.exports = {
 	},
 
 	getStudentCountByAnswerId: function(req,res) {
-    	console.log("--------------getStudentCountByAnswerId");
+    	sails.log.debug("--------------getStudentCountByAnswerId");
     	// var data = req.params.all();
         var id = req.param('id');
         var section = req.param('section');
-    	console.log("id: ", id);
-        console.log("section: ", section);
+    	sails.log.debug("id: ", id);
+        sails.log.debug("section: ", section);
         if (section == -1) {
             StudentAnswer.count({answer: id}).exec(function(err, found){
-            console.log("found: ", found);
+            sails.log.debug("found: ", found);
             return res.json(found);
 
         });
         } else {
-        // console.log("data.section", data.section);
+        // sails.log.debug("data.section", data.section);
     	StudentAnswer.count({answer: id, section: section}).exec(function(err, found){
-    		console.log("found: ", found);
+    		sails.log.debug("found: ", found);
     		return res.json(found);
 
     	});
