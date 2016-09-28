@@ -10,7 +10,7 @@ var password = require('password-hash-and-salt');
 
 module.exports = {
   login: function(req, res) {
-    const data = req.params.all();
+    var data = req.params.all();
 
     // Ensure email and password fields exist
     if(!data.email || !data.password) { return res.status(400).send('Bad request!'); }
@@ -20,7 +20,7 @@ module.exports = {
       Professor.findOne({email: data.email}),
       Student.findOne({email: data.email})
     ]).spread(function(professor, student){
-      let user = {};
+      var user = {};
       if(professor) {
         user = professor;
       } else if(student) {

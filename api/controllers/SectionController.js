@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+ var Promise = require('bluebird');
+
 module.exports = {
   destroySectionsByIds: function(req, res) {
     var data = req.params.all();
@@ -35,5 +37,41 @@ module.exports = {
         res.json(section);
       });
     })
+  },
+
+  getStatisticsForSectionQuiz: function(req, res) {
+    var data = req.params.all();
+    var sectionId = data.sectionId;
+    var quizId = data.quizId;
+    var correctStudentAnswers = {};
+
+    StudentAnswer.find({section: sectionId, quiz: quizId})
+    .populate('student')
+    .populate('answer')
+    .then(function(studentAnswers) {
+      for(var i = 0; i < studentAnswers.length; i++) {
+        var studentAnswer = studentAnswers[i];
+        if(correctStudentAnswers[studentAnswer.student.id] == undefined) {
+          correctStudentAnswers[studentAnswer.student.id] = {
+            correct: 0,
+            name: studentAnswer.student.firstName
+          };
+        }
+        else {
+          if(studentAnswer.answer.correct) {
+            correctStudentAnswers[studentAnswer.student.id].correct++;
+          }
+        }
+      }
+      var correctAnswers = [];
+      for(var studentId in correctStudentAnswers) {
+        if(correctStudentAnswers.hasOwnProperty(studentId)) {
+          var correctAnswer = {name: correctStudentAnswers[studentId].name, correct:correctStudentAnswers[studentId].correct};
+          correctAnswers.push(correctAnswer);
+        }
+      }
+      res.json(correctAnswers);
+    });
   }
+
 };

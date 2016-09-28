@@ -1,6 +1,6 @@
-const password = require('password-hash-and-salt');
-const jwt = require('jsonwebtoken');
-const secret = sails.config.session.secret;
+var password = require('password-hash-and-salt');
+var jwt = require('jsonwebtoken');
+var secret = sails.config.session.secret;
 
 module.exports = {
   encode(payload, next) {
