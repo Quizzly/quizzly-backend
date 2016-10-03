@@ -72,11 +72,9 @@ module.exports = {
 
     // Find the question and section and make sure they exists
     return Promise.all([
-      Question.findOne({id: questionId}).populate('answers'),
+      Question.findOne({id: questionId}).populate('answers').populate('quiz'),
       Section.findOne({id: sectionId})
     ]).spread(function(question, section){
-      sails.log.debug('question', question);
-      sails.log.debug('section', section);
       if(!question || ! section) { return res.status(400).send('Bad Request!'); }
       var questionKey = OpenQuestions.add(question);
       sails.sockets.broadcast('section-'+section.id, 'question', {
@@ -115,6 +113,7 @@ module.exports = {
     var data = {
       student: student.id,
       question: questionData.question.id,
+      quiz: questionData.question.quiz.id,
       answer: answerId
     };
 
