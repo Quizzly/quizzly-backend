@@ -20,6 +20,8 @@ module.exports = {
       Professor.findOne({email: data.email}),
       Student.findOne({email: data.email})
     ]).spread(function(professor, student){
+      sails.log("professor", professor);
+      sails.log("student", student);
       var user = {};
       if(professor) {
         user = professor;
@@ -39,8 +41,10 @@ module.exports = {
         // Encode JWT
         return JWT.encode(user, function(err, jwt){
           if(err || !jwt) { return res.status(400).send('Error occured in logging in.') }
+          sails.log("user", user);
 
           // Set JWT as cookie for web and return the token for mobile
+          console.log("jwt", jwt);
           return res.cookie('jwt', jwt).json({jwt: jwt});
         });
       });
