@@ -14,18 +14,18 @@ module.exports = {
   add: function(question) {
     var key = uuid.v4();
     var ttl = question.duration + bufferTime;
-    questions.set(key, {question: question, answers: question.answers}, ttl);
+    questions.set(key, JSON.stringify(question), ttl);
     return key;
   },
   get: function(questionKey){
     var data = questions.get(questionKey);
     var ttl = questions.getTtl(questionKey);
     if(!data || !ttl) { return null; }
+    var question = JSON.parse(data);
     var expireDate = new Date(ttl);
     var timeRemaing = (expireDate - Date.now()) / 1000;
     return {
-      question: data.question,
-      answers: data.answers,
+      question: question,
       timeRemaining: timeRemaing
     };
   }

@@ -50,6 +50,7 @@ module.exports = {
       student.sections.map(function (section) {
         sails.sockets.join(req, 'section-' + section.id);
       });
+
       return res.ok();
     });
   },
