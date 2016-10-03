@@ -13,7 +13,7 @@ var bufferTime = 1;
 module.exports = {
   add: function(question) {
     var key = uuid.v4();
-    var ttl = question.duration + bufferTime;
+    var ttl = question.duration + bufferTime; //ttl = time to live
     questions.set(key, JSON.stringify(question), ttl);
     return key;
   },
@@ -23,7 +23,7 @@ module.exports = {
     if(!data || !ttl) { return null; }
     var question = JSON.parse(data);
     var expireDate = new Date(ttl);
-    var timeRemaing = (expireDate - Date.now()) / 1000;
+    var timeRemaing = (expireDate - Date.now()) / 1000; // get seconds remaining until question expires.
     return {
       question: question,
       timeRemaining: timeRemaing
