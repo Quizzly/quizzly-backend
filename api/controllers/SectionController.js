@@ -108,7 +108,7 @@ module.exports = {
     }).then(function() {
       for(var quiz in numberOfCorrectAndIncorrectAnswers) { //For each key or student in the map
         if(numberOfCorrectAndIncorrectAnswers.hasOwnProperty(quiz)) {
-          var entry = {name: quiz, correct:numberOfCorrectAndIncorrectAnswers[quiz].correct, incorrect:numberOfCorrectAndIncorrectAnswers[quiz].incorrect}; //Make a pair corresponding to the value pair in the map
+          var entry = {"Name": quiz, "Questions Correct" :numberOfCorrectAndIncorrectAnswers[quiz].correct, "Questions Incorrect" :numberOfCorrectAndIncorrectAnswers[quiz].incorrect}; //Make a pair corresponding to the value pair in the map
           arrayNumberOfCorrectAndIncorrectAnswers.push(entry); //Put it in the array
         }
       }
