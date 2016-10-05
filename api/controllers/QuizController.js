@@ -7,6 +7,7 @@
 
  var async = require("async");
  var Quiche = require("quiche");
+ var Promise = require("bluebird");
 
 module.exports = {
   destroyQuizzesByIds: function(req, res) {
