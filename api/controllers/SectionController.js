@@ -39,6 +39,22 @@ module.exports = {
     })
   },
 
+
+  // This route is used by students to subscribe to to their sections so that a professor can push questions to them.
+  connect: function(req, res) {
+    if(!req.isSocket) { return res.status(400).send('Bad Request'); }
+    Student.findOne({id: req.user.id}).populate('sections').exec(function(err, student) {
+      if (err || !student) {
+        return res.status(400).send('Something went wrong.');
+      }
+      student.sections.map(function (section) {
+        sails.sockets.join(req, 'section-' + section.id);
+      });
+
+      return res.ok();
+    });
+  },
+
   numberOfCorrectAnswersPerStudent: function(req, res) {
     var data = req.params.all();
     var sectionId = data.sectionId;

@@ -178,5 +178,40 @@ module.exports = {
       });
       //end new
     });
-  }
+  },
+
+  // This route is used by professors to ask quizzesparams: (quizId as quiz, sectionId as section)
+  ask: function(req, res) {
+    sails.log.debug('Asking a question');
+    var data = req.params.all();
+    var quizId = data.quiz;
+    var sectionId = data.section;
+
+    if(!quizId || !sectionId) { return res.status(400).send('Bad Request!'); }
+
+    // Find the question and section and make sure they exists
+    return Promise.all([
+      Quiz.findOne({id: quizId}).populate('questions'),
+      Section.findOne({id: sectionId})
+    ]).spread(function(quiz, section){
+      if(!quiz || ! section) { return res.status(400).send('Bad Request!'); }
+      var quizKey = OpenQuizzes.add(quiz);
+      sails.sockets.broadcast('section-'+section.id, 'quiz', {
+        quizKey: quizKey
+      });
+      return res.json({quizKey: quizKey });
+    });
+  },
+
+  getOpenQuiz: function(req, res) {
+    var data = req.params.all();
+    var quizKey = data.quizKey;
+
+    if(!quizKey) { return res.status(400).send('Bad Request!'); }
+
+    var data = OpenQuizzes.get(quizKey);
+
+    return (data) ? res.json(data) : res.status(404).send('Quiz not found!');
+
+  },
 };
