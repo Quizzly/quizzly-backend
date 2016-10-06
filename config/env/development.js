@@ -43,12 +43,10 @@ module.exports = {
         expiry: 4 * 7 * 24 * 3600, // 4 weeks
         sound: 'ping.aiff'
       },
-      // See all available options at https://github.com/argon/node-apn/blob/master/doc/connection.markdown
-      options: {},
-      // I.e., change .cert location file:
-      // options: {
-      //    cert: "/certs/ios/mycert.cert" // {Buffer|String} The filename of the connection certificate to load from disk, or a Buffer/String containing the certificate data. (Defaults to: cert.pem)
-      // }
+
+      options: {
+        cert: 'certs/ios.cert'
+      },
     }
   }
 

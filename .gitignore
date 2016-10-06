@@ -42,6 +42,7 @@
 config/local.js
 config/connections.js
 config/models.js
+config/env/certs/ios.cert
 mongo
 
 ################################################
