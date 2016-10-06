@@ -60,10 +60,22 @@ module.exports = {
   },
   fullLectures: function(req, res) {
     var data = req.params.all();
-    var courseId = data.course;
+    var courseId = null;
+    var lectureSearchCriteria = null;
+    if(data.course) {
+      courseId = data.course;
+      lectureSearchCriteria = {course: courseId};
+    }
+    if(data.professor) {
+      professorId = data.professor;
+      lectureSearchCriteria = {professor: professorId};
+    }
     // sails.log(courseId);
     var fullLectureItems = [];
-    Lecture.find({course: courseId})
+    if(!lectureSearchCriteria) {
+      return res.json([]);
+    }
+    Lecture.find(lectureSearchCriteria)
     .populateAll()
     .then(function(lectures) {
       var lectureItemIds = [];
@@ -111,7 +123,7 @@ module.exports = {
         }
       }
 
-      res.json(lectures);
+      return res.json(lectures);
     });
   }
 };
