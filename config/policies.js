@@ -17,7 +17,7 @@
  */
 
 module.exports.policies = {
-  // '*': 'isAuthenticated',
+  '*': 'isAuthenticated',
 
   AuthController: {
     isStudentTest: ['isStudent'],
