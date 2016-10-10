@@ -39,7 +39,7 @@ module.exports = {
     })
   },
 
-
+  // getStatisticsForSectionQuiz: function(req, res) {
   // This route is used by students to subscribe to to their sections so that a professor can push questions to them.
   connect: function(req, res) {
     if(!req.isSocket) { return res.status(400).send('Bad Request'); }
@@ -104,14 +104,15 @@ module.exports = {
     StudentAnswer.find({section: sectionId, student:studentId})
     .populate('quiz')
     .populate('question')
+    .populate('student')
     .populate('answer')
     .then(function(studentAnswers) {
       for(var i = 0; i < studentAnswers.length; i++) {
         var studentAnswer = studentAnswers[i];
-        if(numberOfCorrectAndIncorrectAnswers[studentAnswer.quiz.title] == undefined) {
-          numberOfCorrectAndIncorrectAnswers[studentAnswer.quiz.title] = {
+        if(correctStudentAnswers[studentAnswer.student.id] == undefined) {
+          correctStudentAnswers[studentAnswer.student.id] = {
             correct: 0,
-            incorrect: 0
+            name: studentAnswer.student.firstName
           };
         }
         else if(studentAnswer.question.type == "freeResponse") {
@@ -119,13 +120,17 @@ module.exports = {
         }
         else {
           if(studentAnswer.answer.correct) {
-            numberOfCorrectAndIncorrectAnswers[studentAnswer.quiz.title].correct++;
-          }
-          else {
-            numberOfCorrectAndIncorrectAnswers[studentAnswer.quiz.title].incorrect++;
+            correctStudentAnswers[studentAnswer.student.id].correct++;
           }
         }
       }
+// <<<<<<< HEAD
+//       var correctAnswers = [];
+//       for(var studentId in correctStudentAnswers) {
+//         if(correctStudentAnswers.hasOwnProperty(studentId)) {
+//           var correctAnswer = {name: correctStudentAnswers[studentId].name, correct:correctStudentAnswers[studentId].correct};
+//           correctAnswers.push(correctAnswer);
+// =======
     }).then(function() {
       for(var quiz in numberOfCorrectAndIncorrectAnswers) { //For each key or student in the map
         if(numberOfCorrectAndIncorrectAnswers.hasOwnProperty(quiz)) {
@@ -133,8 +138,8 @@ module.exports = {
           arrayNumberOfCorrectAndIncorrectAnswers.push(entry); //Put it in the array
         }
       }
-    }).done(function() {
-      res.send(arrayNumberOfCorrectAndIncorrectAnswers); //Put this in done function so it doesn't prematurely send back an empty object
+      res.json(correctAnswers);
     });
   }
+
 };

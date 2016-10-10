@@ -12,17 +12,6 @@
 
 
 module.exports = {
-  conections: {
-    prodMongo: {
-      adapter: 'sails-mongo',
-      url: process.env.MONGODB_URI
-    }
-  },
-
-  models: {
-    connection: 'prodMongo',
-  },
-
   pushSettings: {
     // Android
     gcm: {
