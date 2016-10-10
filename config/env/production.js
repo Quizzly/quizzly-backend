@@ -12,22 +12,6 @@
 
 
 module.exports = {
-  conections: {
-    prodMongo: {
-      adapter: 'sails-mongo',
-      url: process.env.MONGODB_URI,
-      host: 'ds033086.mlab.com',
-      port: 33086,
-      user: 'prod_user',
-      password: 'quizzly',
-      database: 'heroku_dxccm1p4'
-    }
-  },
-
-  models: {
-    connection: 'prodMongo',
-  },
-
   pushSettings: {
     // Android
     gcm: {
