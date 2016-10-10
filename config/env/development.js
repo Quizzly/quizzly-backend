@@ -18,8 +18,8 @@ module.exports = {
    ***************************************************************************/
 
   models: {
-    connection: 'prodMongo'
-  }
+    connection: 'someMongodbServer'
+  },
 
   pushSettings: {
     // Android
