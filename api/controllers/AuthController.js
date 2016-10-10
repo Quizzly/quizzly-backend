@@ -13,7 +13,7 @@ module.exports = {
     var data = req.params.all();
 
     // Ensure email and password fields exist
-    if(!data.email || !data.password) { return res.status(400).send('Bad request!'); }
+    if(!data.email || !data.password) { return res.status(400).send({error: 'Bad request!'}); }
 
     // Find the user
     return Promise.all([
@@ -26,19 +26,19 @@ module.exports = {
       } else if(student) {
         user = student;
       } else {
-        return res.status(400).send('That user was not found!');
+        return res.status(400).send({error: 'That user was not found!'});
       }
 
       // check if password is correct
       return password(data.password).verifyAgainst(user.password, function(err, verified){
-        if(err || !verified) { return res.status('401').send('Not Authorized.'); }
+        if(err || !verified) { return res.status('401').send({error: 'Not Authorized.'}); }
 
         // remove password from payload
         delete user['password'];
 
         // Encode JWT
         return JWT.encode(user, function(err, jwt){
-          if(err || !jwt) { return res.status(400).send('Error occured in logging in.') }
+          if(err || !jwt) { return res.status(400).send({error: 'Error occured in logging in.'}) }
 
           // Set JWT as cookie for web and return the token for mobile
           return res.cookie('jwt', jwt).json({jwt: jwt});
