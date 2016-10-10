@@ -39,10 +39,7 @@ module.exports = {
     })
   },
 
-<<<<<<< HEAD
-  getStatisticsForSectionQuiz: function(req, res) {
-=======
-
+  // getStatisticsForSectionQuiz: function(req, res) {
   // This route is used by students to subscribe to to their sections so that a professor can push questions to them.
   connect: function(req, res) {
     if(!req.isSocket) { return res.status(400).send('Bad Request'); }
@@ -59,7 +56,6 @@ module.exports = {
   },
 
   numberOfCorrectAnswersPerStudent: function(req, res) {
->>>>>>> f4baf6895555ab0b60a0a68bfab557026d8fd47d
     var data = req.params.all();
     var sectionId = data.sectionId;
     var quizId = data.quizId;
@@ -83,19 +79,18 @@ module.exports = {
           }
         }
       }
-<<<<<<< HEAD
-      var correctAnswers = [];
-      for(var studentId in correctStudentAnswers) {
-        if(correctStudentAnswers.hasOwnProperty(studentId)) {
-          var correctAnswer = {name: correctStudentAnswers[studentId].name, correct:correctStudentAnswers[studentId].correct};
-          correctAnswers.push(correctAnswer);
-=======
+// <<<<<<< HEAD
+//       var correctAnswers = [];
+//       for(var studentId in correctStudentAnswers) {
+//         if(correctStudentAnswers.hasOwnProperty(studentId)) {
+//           var correctAnswer = {name: correctStudentAnswers[studentId].name, correct:correctStudentAnswers[studentId].correct};
+//           correctAnswers.push(correctAnswer);
+// =======
     }).then(function() {
       for(var quiz in numberOfCorrectAndIncorrectAnswers) { //For each key or student in the map
         if(numberOfCorrectAndIncorrectAnswers.hasOwnProperty(quiz)) {
           var entry = {"Name": quiz, "Questions Correct" :numberOfCorrectAndIncorrectAnswers[quiz].correct, "Questions Incorrect" :numberOfCorrectAndIncorrectAnswers[quiz].incorrect}; //Make a pair corresponding to the value pair in the map
           arrayNumberOfCorrectAndIncorrectAnswers.push(entry); //Put it in the array
->>>>>>> f4baf6895555ab0b60a0a68bfab557026d8fd47d
         }
       }
       res.json(correctAnswers);
