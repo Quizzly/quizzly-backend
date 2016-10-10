@@ -16,7 +16,6 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.policies.html
  */
 
-
 module.exports.policies = {
   '*': 'isAuthenticated',
 
@@ -25,5 +24,9 @@ module.exports.policies = {
     isProfessorTest: ['isProfessor'],
     login: [],
     signup: []
+  },
+
+  QuestionController: {
+    answer: ['isStudent']
   }
 };

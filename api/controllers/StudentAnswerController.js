@@ -15,41 +15,51 @@ module.exports = {
 		})
 		.populate('answer')
 		.then(function(studentanswers){
+			console.log(studentanswers);
 			var questions = Question.find({
 	        "quiz": req.param('quiz')
 	    })
 			.populate('answers')
 	    .then(function (questions){
-				//Assumes that questions and studentanswer questions are in the same order
-				var countIncorrect = 0;
+				//creating map of studentanswers
+				var studentanswersmap = {};
 				for(var i = 0; i < studentanswers.length; i++){
-					if(questions[i].answers.length > 0){
-						for(var j = 0; j < questions[i].answers.length; j++){
-							//Assumes that students answer all multiple choice questions
-							console.log(studentanswers[i].answer.id);
-							console.log(questions[i].answers[j].id);
-							console.log(studentanswers[i].answer.correct);
-							if((studentanswers[i].answer.id == questions[i].answers[j].id) && (studentanswers[i].answer.correct == false)){
-								console.log("here");
-								questions[i].answers[j].studentSelectedIncorrect = true;
-								countIncorrect++;
-								break;
+					studentanswersmap[studentanswers[i].question] = studentanswers[i];
+				}
+				console.log("Over here: ");
+				console.log(studentanswersmap);
+				console.log(questions);
+				var countIncorrect = 0;
+				for(var i = 0; i < questions.length; i++){
+					var studentanswer = studentanswersmap[questions[i].id];
+					if(studentanswer){
+						if(questions[i].answers.length > 0){
+							for(var j = 0; j < questions[i].answers.length; j++){
+								//Assumes that students answer all multiple choice questions
+								if((studentanswer.answer.id == questions[i].answers[j].id) && (studentanswer.answer.correct == false)){
+									console.log("here");
+									questions[i].answers[j].studentSelectedIncorrect = true;
+									countIncorrect++;
+									break;
+								}
 							}
 						}
-
-					}
-					else{
-						if(studentanswers[i].text){
-							questions[i].answerText = studentanswers[i].text;
+						else{
+							if(studentanswers[i].text){
+								questions[i].answerText = studentanswers[i].text;
+							}
 						}
 					}
-
+					else{
+						questions[i].studentUnanswered = true;
+					}
 				}
 				var object = {
 					questions: questions,
-					size: studentanswers.length,
+					size: questions.length,
 					countIncorrect: countIncorrect,
-					countCorrect: studentanswers.length - countIncorrect
+					countCorrect: studentanswers.length - countIncorrect,
+					countUnanswered: questions.length - studentanswers.length
 				};
 				console.log(questions);
 	      return res.json(object);

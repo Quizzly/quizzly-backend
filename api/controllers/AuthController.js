@@ -17,9 +17,11 @@ module.exports = {
 
     // Find the user
     return Promise.all([
-      Professor.findOne({email: data.email}),
-      Student.findOne({email: data.email})
+      Professor.findOne({email: data.email}).populateAll(),
+      Student.findOne({email: data.email}).populateAll()
     ]).spread(function(professor, student){
+      sails.log("professor", professor);
+      sails.log("student", student);
       var user = {};
       if(professor) {
         user = professor;
@@ -34,14 +36,14 @@ module.exports = {
         if(err || !verified) { return res.status('401').send({error: 'Not Authorized.'}); }
 
         // remove password from payload
-        delete user['password'];
+        delete user.password;
 
         // Encode JWT
         return JWT.encode(user, function(err, jwt){
           if(err || !jwt) { return res.status(400).send({error: 'Error occured in logging in.'}) }
-
           // Set JWT as cookie for web and return the token for mobile
-          return res.cookie('jwt', jwt).json({jwt: jwt});
+          console.log("jwt", jwt);
+          return res.cookie('jwt', jwt).json({jwt: jwt, user: user});
         });
       });
     }).catch(function(err){
