@@ -10,29 +10,48 @@
  *
  */
 
+
 module.exports = {
+  conections: {
+    prodMongo: {
+      adapter: 'sails-mongo',
+      url: process.env.MONGODB_URI
+    }
+  },
 
-  /***************************************************************************
-   * Set the default database connection for models in the production        *
-   * environment (see config/connections.js and config/models.js )           *
-   ***************************************************************************/
+  models: {
+    connection: 'prodMongo',
+  },
 
-  // models: {
-  //   connection: 'someMysqlServer'
-  // },
+  pushSettings: {
+    // Android
+    gcm: {
+      id: null, // PUT YOUR GCM SERVER API KEY,
+      msgcnt: 1,
+      dataDefaults: {
+        delayWhileIdle: false,
+        timeToLive: 4 * 7 * 24 * 3600, // 4 weeks
+        retries: 4,
+      },
+      // Custom GCM request options https://github.com/ToothlessGear/node-gcm#custom-gcm-request-options
+      options: {},
+    },
 
-  /***************************************************************************
-   * Set the port in the production environment to 80                        *
-   ***************************************************************************/
-
-  // port: 80,
-
-  /***************************************************************************
-   * Set the log level in production environment to "silent"                 *
-   ***************************************************************************/
-
-  // log: {
-  //   level: "silent"
-  // }
+    // Apple
+    apn: {
+      gateway: 'gateway.sandbox.push.apple.com',
+      badge: 1,
+      defaultData: {
+        expiry: 4 * 7 * 24 * 3600, // 4 weeks
+        sound: 'ping.aiff'
+      },
+      // See all available options at https://github.com/argon/node-apn/blob/master/doc/connection.markdown
+      options: {},
+      // I.e., change .cert location file:
+      // options: {
+      //    cert: "/certs/ios/mycert.cert" // {Buffer|String} The filename of the connection certificate to load from disk, or a Buffer/String containing the certificate data. (Defaults to: cert.pem)
+      // }
+    }
+  }
 
 };

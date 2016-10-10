@@ -9,7 +9,8 @@ module.exports = {
   attributes: {
     // Primitives
     title: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
 
     // Associations

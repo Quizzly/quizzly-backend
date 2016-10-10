@@ -29,9 +29,9 @@ module.exports = {
     var data = req.params.all();
 /*
     Student.findOne({email: data.student}).exec(function(err, s) {
-      console.log("id: " + s.id);
+      sails.log.debug("id: " + s.id);
       StudentAnswer.find({student: s.id, quiz: data.quiz}).populate('question').exec(function(err, answers) {
-        console.log("answers: " + answers);
+        sails.log.debug("answers: " + answers);
         var questions = [];
         var dict = {};
         answers.forEach(function(answer) {
@@ -115,7 +115,7 @@ module.exports = {
       }
 
     ], function(err) {
-      console.log(response);
+      sails.log.debug(response);
       return res.send(200, response);
     });
   },
@@ -125,7 +125,7 @@ module.exports = {
     var data = req.params.all();
 
     StudentAnswer.find({question: data.question_id}).sort('answer ASC').exec(function(err, student_answers) {
-      console.log(student_answers);
+      sails.log.debug(student_answers);
       var previous = -1;
       var i = 0;
       var num_answers = [];
@@ -178,5 +178,40 @@ module.exports = {
       });
       //end new
     });
-  }
+  },
+
+  // This route is used by professors to ask quizzesparams: (quizId as quiz, sectionId as section)
+  ask: function(req, res) {
+    sails.log.debug('Asking a question');
+    var data = req.params.all();
+    var quizId = data.quiz;
+    var sectionId = data.section;
+
+    if(!quizId || !sectionId) { return res.status(400).send('Bad Request!'); }
+
+    // Find the question and section and make sure they exists
+    return Promise.all([
+      Quiz.findOne({id: quizId}).populate('questions'),
+      Section.findOne({id: sectionId})
+    ]).spread(function(quiz, section){
+      if(!quiz || ! section) { return res.status(400).send('Bad Request!'); }
+      var quizKey = OpenQuizzes.add(quiz);
+      sails.sockets.broadcast('section-'+section.id, 'quiz', {
+        quizKey: quizKey
+      });
+      return res.json({quizKey: quizKey });
+    });
+  },
+
+  getOpenQuiz: function(req, res) {
+    var data = req.params.all();
+    var quizKey = data.quizKey;
+
+    if(!quizKey) { return res.status(400).send('Bad Request!'); }
+
+    var data = OpenQuizzes.get(quizKey);
+
+    return (data) ? res.json(data) : res.status(404).send('Quiz not found!');
+
+  },
 };

@@ -9,10 +9,11 @@ module.exports = {
   attributes: {
     // Primitives
     title: { // 'CSCI 201'
-      type: 'string'
+      type: 'string',
+      required: true
     },
     professor: {
-      model: 'professor'
+      model: 'professor',
     },
     term: {
       model: 'term'

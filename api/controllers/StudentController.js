@@ -9,28 +9,28 @@ var Promise = require('bluebird');
 
 module.exports = {
   getStudentCourses: function(req, res) {
-    console.log("--------------getStudentCourses");
+    sails.log.debug("--------------getStudentCourses");
     var data = req.params.all();
     var courses = [];
     Student.findOne({id: data.id}).populate('sections')
     .exec(function(err, student) {
-      console.log("execing with student", student.firstName);
-      console.log("student sections", student.sections);
+      sails.log.debug("execing with student", student.firstName);
+      sails.log.debug("student sections", student.sections);
       Promise.each(student.sections, function(section){
-        console.log("in promise loop with section...", section);
+        sails.log.debug("in promise loop with section...", section);
         return Section.findOne({id: section.id}).then(function(section){
-          console.log("section", section.title);
+          sails.log.debug("section", section.title);
           return section;
         }).then(function(section) {
           return Course.findOne({id: section.course}).then(function(course){
-            console.log("course", course.title);
+            sails.log.debug("course", course.title);
             courses.push(course);
           });
         });
       })
       .then(function() {
-        console.log("finished!", courses.length);
-        console.log("finished!", courses);
+        sails.log.debug("finished!", courses.length);
+        sails.log.debug("finished!", courses);
         return res.json(courses);
       });
     });
@@ -41,49 +41,49 @@ module.exports = {
     var courses = [];
     Student.findOne({email: data.user}).populate('sections')
     .exec(function(err, student) {
-      console.log("execing with student", student.firstName);
-      console.log("student sections", student.sections);
+      sails.log.debug("execing with student", student.firstName);
+      sails.log.debug("student sections", student.sections);
       Promise.each(student.sections, function(section){
-        console.log("in promise loop with section...", section);
+        sails.log.debug("in promise loop with section...", section);
         return Section.findOne({id: section.id}).then(function(section){
-          console.log("section", section.title);
+          sails.log.debug("section", section.title);
           return section;
         }).then(function(section) {
           return Course.findOne({id: section.course}).then(function(course){
-            console.log("course", course.title);
+            sails.log.debug("course", course.title);
             courses.push(course);
           });
         });
       })
       .then(function() {
-        console.log("finished!", courses.length);
-        console.log("finished!", courses);
+        sails.log.debug("finished!", courses.length);
+        sails.log.debug("finished!", courses);
         return res.json(courses);
       });
     });
   },
 
   getStudentsByCourseId: function(req,res) {
-    console.log("--------------getStudentsByCourseId");
+    sails.log.debug("--------------getStudentsByCourseId");
     var data = req.params.all();
     var students = [];
     // var allStudents= Students.find().populate('sections');
     Section.find({course: data.id}).exec(function (err, sections) {
-      // console.log("sections", sections);
+      // sails.log.debug("sections", sections);
       Promise.each(sections,function(section) {
-        // console.log("section",section);
+        // sails.log.debug("section",section);
         return Student.find().populate('sections').then(function (all_students) {
-          // console.log("all_students", all_students);
+          // sails.log.debug("all_students", all_students);
           return all_students;
         }).then(function(all_students) {
-          // console.log("all_students_length", all_students.length);
+          // sails.log.debug("all_students_length", all_students.length);
           return Promise.each(all_students, function(student){
-            // console.log("all_students_length", student.sections.length);
+            // sails.log.debug("all_students_length", student.sections.length);
             for (i = 0; i < student.sections.length; i++) {
-              // console.log("section.id",section.id);
-              // console.log("student.sections[i]",student.sections[i]);
+              // sails.log.debug("section.id",section.id);
+              // sails.log.debug("student.sections[i]",student.sections[i]);
               if (student.sections[i].id == section.id) {
-                // console.log("YOLO");
+                // sails.log.debug("YOLO");
                 students.push(student);
                 return;
               }
@@ -91,37 +91,37 @@ module.exports = {
           });
         });
       }).then(function() {
-        console.log("finished!", students.length);
-        // console.log("finished!", students);
+        sails.log.debug("finished!", students.length);
+        // sails.log.debug("finished!", students);
         return res.json(students);
       });
     });
   },
 
   getStudentsBySectionId: function(req,res) {
-    console.log("--------------getStudentsBySectionId");
+    sails.log.debug("--------------getStudentsBySectionId");
     var data = req.params.all();
     var students = [];
     Student.find().populate('sections').then(function (all_students) {
-          // console.log("all_students", all_students);
+          // sails.log.debug("all_students", all_students);
           return all_students;
         }).then(function(all_students) {
-          // console.log("all_students_length", all_students.length);
+          // sails.log.debug("all_students_length", all_students.length);
           return Promise.each(all_students, function(student){
-            // console.log("all_students_length", student.sections.length);
+            // sails.log.debug("all_students_length", student.sections.length);
             for (i = 0; i < student.sections.length; i++) {
-              // console.log("section.id",section.id);
-              // console.log("student.sections[i]",student.sections[i]);
+              // sails.log.debug("section.id",section.id);
+              // sails.log.debug("student.sections[i]",student.sections[i]);
               if (student.sections[i].id == data.id) {
-                // console.log("YOLO");
+                // sails.log.debug("YOLO");
                 students.push(student);
                 return;
               }
             }
           });
         }).then(function() {
-        console.log("finished!", students.length);
-        // console.log("finished!", students);
+        sails.log.debug("finished!", students.length);
+        // sails.log.debug("finished!", students);
         return res.json(students);
       });
   },
@@ -147,7 +147,7 @@ module.exports = {
     });
   }
   // getStudentAnswer: function(req,res) {
-  //   console.log("--------------getStudentAnswer");
+  //   sails.log.debug("--------------getStudentAnswer");
   //   var data = req.params.all();
   //   var courses = [];
   // }

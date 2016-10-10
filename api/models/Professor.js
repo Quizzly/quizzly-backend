@@ -17,21 +17,29 @@ module.exports = {
       unique: true,
       required: true
     },
+    isEmailValidated: {
+      type: 'boolean',
+      defaultsTo: false
+    },
     password: {
       type: 'string',
       required: true
     },
     facultyId: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     firstName: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     lastName: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     school: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
 
     // Associations
