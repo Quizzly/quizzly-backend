@@ -62,9 +62,11 @@ module.exports = {
     var correctStudentAnswers = {};
 
     StudentAnswer.find({section: sectionId, quiz: quizId})
+    .populate('question')
     .populate('student') //Take the ObjectId of the linked student model and replace it with the object corresponding to that ObjectId
     .populate('answer') ////Take the ObjectId of the linked answer model and replace it with the object corresponding to that ObjectId
     .then(function(studentAnswers) {
+      console.log(studentAnswers);
       for(var i = 0; i < studentAnswers.length; i++) { //For each student answer corresponding to the quiz and section
         var studentAnswer = studentAnswers[i];
         if(correctStudentAnswers[studentAnswer.student.id] == undefined) { //If student is not in map
@@ -72,6 +74,9 @@ module.exports = {
             correct: 0, //Value: (Correct number of answers, First name)
             name: studentAnswer.student.firstName
           };
+        }
+        else if(studentAnswer.question.type == "freeResponse") {
+          correctStudentAnswers[studentAnswer.student.id].correct++;
         }
         else { //Student already in map
           if(studentAnswer.answer.correct) {  //If the student's answer is correct
@@ -82,7 +87,7 @@ module.exports = {
       var correctAnswers = []; //New array to put the value pairs in (exclude keys from map)
       for(var studentId in correctStudentAnswers) { //For each key or student in the map
         if(correctStudentAnswers.hasOwnProperty(studentId)) {
-          var correctAnswer = {name: correctStudentAnswers[studentId].name, correct:correctStudentAnswers[studentId].correct}; //Make a pair corresponding to the value pair in the map
+          var correctAnswer = {"Name": correctStudentAnswers[studentId].name, "Questions Correct":correctStudentAnswers[studentId].correct}; //Make a pair corresponding to the value pair in the map
           correctAnswers.push(correctAnswer); //Put it in the array
         }
       }
@@ -109,7 +114,7 @@ module.exports = {
             incorrect: 0
           };
         }
-        if(studentAnswer.question.type == "freeResponse") {
+        else if(studentAnswer.question.type == "freeResponse") {
           numberOfCorrectAndIncorrectAnswers[studentAnswer.quiz.title].correct++;
         }
         else {
