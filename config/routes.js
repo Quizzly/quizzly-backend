@@ -44,6 +44,9 @@ module.exports.routes = {
 
   'post /term/multifind': 'TermController.multifind',
 
+  'post /createLecture': 'LectureController.createLecture',
+  'post /full/lectures': 'LectureController.fullLectures',
+
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *
