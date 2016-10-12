@@ -37,15 +37,17 @@ module.exports = {
 
     // Apple
     apn: {
-      gateway: 'com.quizzly.mobile',
-      badge: 1,
-      defaultData: {
+      data: {
+        topic: 'com.quizzly.mobile',
+        badge: 1,
         expiry: 4 * 7 * 24 * 3600, // 4 weeks
         sound: 'ping.aiff'
       },
 
       options: {
-        cert: 'certs/ios.cert'
+        cert: 'config/env/certs/ios-cert.pem',
+        key: 'config/env/certs/ios-key.pem',
+        production: false
       },
     }
   }

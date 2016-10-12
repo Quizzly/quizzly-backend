@@ -43,20 +43,18 @@ module.exports = {
   },
 
   pushToDevicesFromStudentIds: function(studentIds, data) {
-    return Device.find(studentIds).exec(function(err, records){
-      return Device.find({student:studentId}).exec(function(err, devices){
-        if(err) {
-          return sails.log.debug('Error occurend in pushToDevicesFromStudentIds');
-        }
-        else if(!devices) {
-          return sails.log.debug('Push requested but no devices found');
-        }
+    return Device.find().where({student:studentIds}).exec(function(err, records){
+      if(err) {
+        return sails.log.debug('Error occurend in pushToDevicesFromStudentIds');
+      }
+      else if(!records) {
+        return sails.log.debug('Push requested but no devices found');
+      }
 
-        var deviceIds = devices.map(function(device){ return device.deviceId; });
+      var deviceIds = records.map(function(device){ return device.deviceId; });
 
-        Push.send(deviceIds, data, function (result) {
-          sails.log.debug('Device.pushToDevicesFromStudentIds: result =>', result);
-        });
+      Push.send(deviceIds, data, function (result) {
+        sails.log.debug('Device.pushToDevicesFromStudentIds: result =>', result);
       });
     });
   }

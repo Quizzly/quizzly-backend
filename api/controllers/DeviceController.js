@@ -15,9 +15,11 @@ module.exports = {
       message: 'This is a test!'
     };
 
-    if(studentId) {
-      Device.pushToDevicesFromStudentIds([studentId], testData);
-      return res.ok();
+    if(!!studentId) {
+      Device.pushToDevicesFromStudentIds([studentId], testData, function(result){
+        sails.log.debug('result', result);
+        return res.ok();
+      });
     }
 
     return res.status(400).send('No studentId');
