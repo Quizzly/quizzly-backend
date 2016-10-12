@@ -7,6 +7,7 @@
 
  var async = require("async");
  var Quiche = require("quiche");
+ var Promise = require("bluebird");
 
 module.exports = {
   destroyQuizzesByIds: function(req, res) {
@@ -180,7 +181,7 @@ module.exports = {
     });
   },
 
-  // This route is used by professors to ask quizzesparams: (quizId as quiz, sectionId as section)
+  // This route is used by professors to ask quizzes params: (quizId as quiz, sectionId as section)
   ask: function(req, res) {
     sails.log.debug('Asking a question');
     var data = req.params.all();
@@ -214,4 +215,44 @@ module.exports = {
     return (data) ? res.json(data) : res.status(404).send('Quiz not found!');
 
   },
+
+  answer: function(req, res) {
+    var data = req.params.all();
+    var quizKey = data.quizKey;
+    var questionId = data.question;
+    var answerId = data.answer;
+    var student = req.user;
+
+    if(!quizKey || !answerId || !student) { return res.status(400).send('Bad Request'); }
+
+    var quiz = OpenQuizzes.get(quizKey);
+
+    if(!quiz ) { return res.status(401).send('Quiz Not Found!'); }
+
+    var question = quiz.questions.filter(function(question){
+      if(question.id == questionId){
+        return true;
+      }
+
+      return false;
+    });
+
+    if(!question.length > 0) {
+      return res.status(400).send('That question is not part of this quiz.');
+    }
+
+    question = question[0];
+
+    var data = {
+      student: student.id,
+      question: question.id,
+      quiz: quiz.id,
+      answer: answerId
+    };
+
+    StudentAnswer.create(data).exec(function(err, studentAnswer){
+      if(err || !studentAnswer) { return res.status(400).send('something went wrong.'); }
+      return res.json(studentAnswer);
+    });
+  }
 };
