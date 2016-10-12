@@ -27,6 +27,11 @@ module.exports = {
         user = professor;
       } else if(student) {
         user = student;
+
+        if(data.mobile) {
+          Device.handleStudentLogin(student, data.mobile);
+        }
+
       } else {
         return res.status(400).send({error: 'That user was not found!'});
       }
@@ -89,6 +94,14 @@ module.exports = {
         if(err) {
           res.status(400).send('That user already exists!');
         }
+
+        // If signing up from mobile device and mobile data is available, register them with their device
+        if(data.isStudent == 'true' || data.isStudent == 'YES') {
+          if(data.mobile) {
+            Device.handleStudentLogin(user, data.mobile);
+          }
+        }
+
         sails.log.debug("signed up user", user);
         user.password = "";
         delete user.password;

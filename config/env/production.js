@@ -38,7 +38,7 @@ module.exports = {
       options: {},
       // I.e., change .cert location file:
       // options: {
-      //    cert: "/certs/ios/mycert.cert" // {Buffer|String} The filename of the connection certificate to load from disk, or a Buffer/String containing the certificate data. (Defaults to: cert.pem)
+      //    cert: "/certs/ios/mycert.cert" // {Buffer|String} The filename of the connection certificate to load from disk, or a Buffer/String containing the certificate data. (Defaults to: ios.pem)
       // }
     }
   }
