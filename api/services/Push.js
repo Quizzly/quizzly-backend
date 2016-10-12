@@ -11,17 +11,24 @@ var settings = sails.config.pushSettings;
 var apnProvider = new apn.Provider(settings.apn.options);
 
 module.exports = {
-  send: function(deviceIds, data, callback) {
-    var note = {};
-    note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+  send: function(deviceIds, data) {
+    var note = new apn.Notification();
+    note.expiry = (Math.floor(Date.now() / 1000) + 3600) * settings.apn.data.expiry;
     note.badge = settings.apn.data.badge;
     note.sound = settings.apn.data.sound;
-    note.alert = "\uD83D\uDCE7 \u2709 You have a new message";
-    note.payload = {'messageFrom': 'Quizzly'};
+    note.alert = data.title || settings.apn.data.defaultAlert;
+    note.payload = data;
     note.topic = settings.apn.gateway;
 
-    apnProvider.send(note, deviceIds).then( (result) => {
-      callback(result);
+    return apnProvider.send(note, deviceIds);
+  },
+
+  pushToSection(section, data) {
+    return Section.findOne({id: section}).populate('student').exec(function(err, section){
+      if(err || !section){
+        return sails.log.error('pushToSection', err);
+      }
+      return Device.pushToDevicesFromStudentIds(section.students, data);
     });
   }
 };

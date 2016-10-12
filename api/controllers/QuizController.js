@@ -200,6 +200,7 @@ module.exports = {
       sails.sockets.broadcast('section-'+section.id, 'quiz', {
         quizKey: quizKey
       });
+      Push.pushToSection(section, {title: 'You have a new quiz!', quizKey: quizKey, type: 'quiz' });
       return res.json({quizKey: quizKey });
     });
   },

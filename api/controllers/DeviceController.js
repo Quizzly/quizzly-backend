@@ -12,12 +12,25 @@ module.exports = {
 
     var testData = {
       title: 'Test Push Notification',
-      message: 'This is a test!'
+      data: {
+
+      }
     };
 
     if(!!studentId) {
-      Device.pushToDevicesFromStudentIds([studentId], testData, function(result){
+      return Device.pushToDevicesFromStudentIds([studentId], testData).then(function(result){
+
         sails.log.debug('result', result);
+        var successResponses = result.sent.map(function(sent){
+            return sent.response;
+        });
+        var failedResponses = result.failed.map(function(fail){
+          return fail.response;
+        });
+        sails.log.debug('success', successResponses);
+        sails.log.debug('failed', failedResponses);
+
+
         return res.ok();
       });
     }
