@@ -13,7 +13,7 @@ module.exports = {
     var testData = {
       title: 'Test Push Notification',
       message: 'This is a test!'
-    }
+    };
 
     if(studentId) {
       Device.pushToDevicesFromStudentIds([studentId], testData);
