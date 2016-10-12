@@ -42,7 +42,7 @@
 config/local.js
 config/connections.js
 config/models.js
-config/env/certs/*.cer
+config/env/certs/*.pem
 mongo
 
 ################################################
