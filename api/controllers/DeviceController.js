@@ -18,7 +18,7 @@ module.exports = {
     };
 
     if(!!studentId) {
-      return Device.pushToDevicesFromStudentIds([studentId], testData).then(function(result){
+      return Device.pushToDevicesFromStudentIds([studentId], testData, function(result){
 
         sails.log.debug('result', result);
         var successResponses = result.sent.map(function(sent){

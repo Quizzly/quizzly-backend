@@ -26,6 +26,7 @@ module.exports = {
   pushToSection(section, data) {
     return Section.findOne({id: section}).populate('student').exec(function(err, section){
       if(err || !section){
+        sails.log.debug('section', section);
         return sails.log.error('pushToSection', err);
       }
       return Device.pushToDevicesFromStudentIds(section.students, data);

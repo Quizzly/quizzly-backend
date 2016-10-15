@@ -43,7 +43,7 @@ module.exports = {
   },
 
   pushToDevicesFromStudentIds: function(studentIds, data, callback) {
-    return Device.find().where({student:studentIds}).exec(function(err, records){
+    Device.find().where({student:studentIds}).exec(function(err, records){
       if(err) {
         return sails.log.debug('Error occurend in pushToDevicesFromStudentIds');
       }
@@ -53,7 +53,7 @@ module.exports = {
 
       var deviceIds = records.map(function(device){ return device.deviceId; });
 
-      return Push.send(deviceIds, data);
+      Push.send(deviceIds, data).then(callback);
     });
   }
 
