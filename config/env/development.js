@@ -17,8 +17,39 @@ module.exports = {
    * environment (see config/connections.js and config/models.js )           *
    ***************************************************************************/
 
-  // models: {
-  //   connection: 'someMongodbServer'
-  // }
+  models: {
+    connection: 'someMongodbServer'
+  },
+
+  pushSettings: {
+    // // Android
+    // gcm: {
+    //   id: null, // PUT YOUR GCM SERVER API KEY,
+    //   msgcnt: 1,
+    //   dataDefaults: {
+    //     delayWhileIdle: false,
+    //     timeToLive: 4 * 7 * 24 * 3600, // 4 weeks
+    //     retries: 4,
+    //   },
+    //   // Custom GCM request options https://github.com/ToothlessGear/node-gcm#custom-gcm-request-options
+    //   options: {},
+    // },
+
+    // Apple
+    apn: {
+      data: {
+        topic: 'com.quizzly.mobile',
+        badge: 1,
+        expiry: 4 * 7 * 24 * 3600, // 4 weeks
+        sound: 'ping.aiff'
+      },
+
+      options: {
+        cert: 'config/env/certs/ios-cert.pem',
+        key: 'config/env/certs/ios-key.pem',
+        production: false
+      },
+    }
+  }
 
 };
