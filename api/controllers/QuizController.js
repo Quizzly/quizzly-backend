@@ -196,12 +196,22 @@ module.exports = {
       Section.findOne({id: sectionId})
     ]).spread(function(quiz, section){
       if(!quiz || ! section) { return res.status(400).send('Bad Request!'); }
-      var quizKey = OpenQuizzes.add(quiz);
-      sails.sockets.broadcast('section-'+section.id, 'quiz', {
-        quizKey: quizKey
+
+      return Promise.map(quiz.questions, question => {
+        return Answer.find({question: question.id});
+      }).then(function(data){
+        for(let i = 0; i < data.length; i++) {
+          quiz.questions[i].answers = data[i];
+        }
+
+        var quizKey = OpenQuizzes.add(quiz);
+        sails.sockets.broadcast('section-'+section.id, 'quiz', {
+          quizKey: quizKey
+        });
+
+        Push.pushToSection(section, {title: 'You have a new quiz!', quizKey: quizKey, type: 'quiz' });
+        return res.json({quizKey: quizKey });
       });
-      Push.pushToSection(section, {title: 'You have a new quiz!', quizKey: quizKey, type: 'quiz' });
-      return res.json({quizKey: quizKey });
     });
   },
 

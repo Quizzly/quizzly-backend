@@ -53,7 +53,7 @@ module.exports = {
 
       var deviceIds = records.map(function(device){ return device.deviceId; });
 
-      Push.send(deviceIds, data).then(callback);
+      Push.send(deviceIds, data, callback);
     });
   }
 
