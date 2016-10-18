@@ -12,7 +12,7 @@
 module.exports.models = {
   /*need to run npm install sails-mysql and have sql installed (follow guide)*/
   // connection: 'someMongodbServer',
-  connection: 'prodMongo',
+  connection: 'someMongodbServer',
   /*need to run npm install sails-memory (follow guide)*/
   // connection: 'memory',
   migrate: 'alter'
