@@ -20,7 +20,7 @@ module.exports = {
     note.payload = data;
     note.topic = settings.apn.gateway;
 
-    // return apnProvider.send(note, deviceIds).then(callback);
+    return apnProvider.send(note, deviceIds).then(callback);
   },
 
   pushToSection(section, data, callback) {

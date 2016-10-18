@@ -12,6 +12,18 @@
 
 
 module.exports = {
+
+  connections: {
+    prodMongo: {
+      adapter: 'sails-mongo',
+      url: process.env.MONGOLAB_URI
+    }
+  },
+
+  models: {
+    connection: 'prodMongo'
+  },
+
   pushSettings: {
     // // Android
     // gcm: {
@@ -32,12 +44,13 @@ module.exports = {
         topic: 'com.quizzly.mobile',
         badge: 1,
         expiry: 1, // in hours
+        defaultAlert: 'You have a new message!',
         sound: 'ping.aiff'
       },
 
       options: {
-        cert: 'config/env/certs/ios-cert.pem',
-        key: 'config/env/certs/ios-key.pem',
+        cert: process.env.APN_CERT,
+        key: process.env.APN_KEY,
         production: true
       },
     }

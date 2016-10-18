@@ -29,6 +29,8 @@ module.exports = {
         });
         sails.log.debug('success', successResponses);
         sails.log.debug('failed', failedResponses);
+        const failedErrors = failedResponses.map(fail => fail.error);
+        sails.log.debug('errors', failedErrors);
 
 
         return res.ok();
