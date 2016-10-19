@@ -29,7 +29,7 @@ module.exports = {
         });
         sails.log.debug('success', successResponses);
         sails.log.debug('failed', failedResponses);
-        const failedErrors = failedResponses.map(fail => fail.error);
+        var failedErrors = failedResponses.map(fail => fail.error);
         sails.log.debug('errors', failedErrors);
 
 
@@ -40,4 +40,3 @@ module.exports = {
     return res.status(400).send('No studentId');
   }
 };
-
