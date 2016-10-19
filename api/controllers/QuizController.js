@@ -200,7 +200,7 @@ module.exports = {
       return Promise.map(quiz.questions, question => {
         return Answer.find({question: question.id});
       }).then(function(data){
-        for(let i = 0; i < data.length; i++) {
+        for(var i = 0; i < data.length; i++) {
           quiz.questions[i].answers = data[i];
         }
 
