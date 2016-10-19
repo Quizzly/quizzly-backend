@@ -94,13 +94,28 @@ module.exports = {
         .then(function(lectureItem) {
           switch (lectureItem.type) {
             case 'QUESTION':
-              fullLectureItems.push(lectureItem);
+              return Question.findOne(lectureItem.question.id).populateAll()
+              .then(function(question) {
+                lectureItem.question = question;
+                fullLectureItems.push(lectureItem);
+              })
             break;
             case 'QUIZ':
               return Quiz.findOne(lectureItem.quiz.id).populateAll()
               .then(function(quiz) {
-                lectureItem.quiz = quiz;
-                fullLectureItems.push(lectureItem);
+                var questions = [];
+                return Promise.each(quiz.questions, function(question) {
+                  return Question.findOne(question.id).populateAll()
+                  .then(function(question) {
+                    questions.push(question);
+                  });
+                })
+                .then(function() {
+                  console.log('questions', questions);
+                  quiz.questions = questions;
+                  lectureItem.quiz = quiz;
+                  fullLectureItems.push(lectureItem);
+                })
               })
             break;
           }

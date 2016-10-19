@@ -80,6 +80,9 @@ module.exports = {
       sails.sockets.broadcast('section-'+section.id, 'question', {
         questionKey: questionKey
       });
+      Push.pushToSection(section, {title: 'You have a new question!', questionKey: questionKey, type: 'question'}, function(result) {
+        sails.log.debug('push result', result);
+      });
       return res.json({questionKey: questionKey });
     });
   },

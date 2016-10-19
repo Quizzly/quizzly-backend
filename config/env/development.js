@@ -22,33 +22,34 @@ module.exports = {
   },
 
   pushSettings: {
-    // Android
-    gcm: {
-      id: null, // PUT YOUR GCM SERVER API KEY,
-      msgcnt: 1,
-      dataDefaults: {
-        delayWhileIdle: false,
-        timeToLive: 4 * 7 * 24 * 3600, // 4 weeks
-        retries: 4,
-      },
-      // Custom GCM request options https://github.com/ToothlessGear/node-gcm#custom-gcm-request-options
-      options: {},
-    },
+    // // Android
+    // gcm: {
+    //   id: null, // PUT YOUR GCM SERVER API KEY,
+    //   msgcnt: 1,
+    //   dataDefaults: {
+    //     delayWhileIdle: false,
+    //     timeToLive: 4 * 7 * 24 * 3600, // 4 weeks
+    //     retries: 4,
+    //   },
+    //   // Custom GCM request options https://github.com/ToothlessGear/node-gcm#custom-gcm-request-options
+    //   options: {},
+    // },
 
     // Apple
     apn: {
-      gateway: 'gateway.sandbox.push.apple.com',
-      badge: 1,
-      defaultData: {
-        expiry: 4 * 7 * 24 * 3600, // 4 weeks
+      data: {
+        topic: 'com.quizzly.mobile',
+        badge: 1,
+        expiry: 1, // in hours
+        defaultAlert: 'You have a new message!',
         sound: 'ping.aiff'
       },
-      // See all available options at https://github.com/argon/node-apn/blob/master/doc/connection.markdown
-      options: {},
-      // I.e., change .cert location file:
-      // options: {
-      //    cert: "/certs/ios/mycert.cert" // {Buffer|String} The filename of the connection certificate to load from disk, or a Buffer/String containing the certificate data. (Defaults to: cert.pem)
-      // }
+
+      options: {
+        cert: 'config/env/certs/ios-cert.pem',
+        key: 'config/env/certs/ios-key.pem',
+        production: false
+      },
     }
   }
 
