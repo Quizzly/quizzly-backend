@@ -100,7 +100,7 @@ module.exports = {
         }
 
         // If signing up from mobile device and mobile data is available, register them with their device
-        if(data.isStudent == 'true' || data.isStudent == 'YES') {
+        if(data.isProfessor != 'true' && data.isProfessor != 'YES') {
           if(data.mobile) {
             Device.handleStudentLogin(user, data.mobile);
           }
