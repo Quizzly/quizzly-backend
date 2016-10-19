@@ -30,7 +30,7 @@ module.exports = {
         return sails.log.error('pushToSection', err);
       }
 
-      const studentIds = section.students.map(student => student.id);
+      var studentIds = section.students.map(student => student.id);
 
       return Device.pushToDevicesFromStudentIds(studentIds, data, callback);
     });
