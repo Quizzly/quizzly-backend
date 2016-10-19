@@ -28,6 +28,10 @@ module.exports = {
       } else if(student) {
         user = student;
 
+        sails.log.debug('STUDENT LOGGING IN');
+        sails.log.debug('student', student);
+        sails.log.debug('data.mobile', data.mobile);
+
         if(data.mobile) {
           Device.handleStudentLogin(student, data.mobile);
         }
