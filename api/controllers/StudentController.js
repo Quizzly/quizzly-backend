@@ -101,25 +101,8 @@ module.exports = {
   getStudentsBySectionId: function(req,res) {
     sails.log.debug("--------------getStudentsBySectionId");
     var data = req.params.all();
-    var students = [];
-    Student.find().populate('sections').then(function (all_students) {
-          // sails.log.debug("all_students", all_students);
-          return all_students;
-        }).then(function(all_students) {
-          // sails.log.debug("all_students_length", all_students.length);
-          return Promise.each(all_students, function(student){
-            // sails.log.debug("all_students_length", student.sections.length);
-            for (i = 0; i < student.sections.length; i++) {
-              // sails.log.debug("section.id",section.id);
-              // sails.log.debug("student.sections[i]",student.sections[i]);
-              if (student.sections[i].id == data.id) {
-                // sails.log.debug("YOLO");
-                students.push(student);
-                return;
-              }
-            }
-          });
-        }).then(function() {
+    console.log(data.id);
+    StudentService.getStudentsBySectionId(data.id).then(function(students) {
         sails.log.debug("finished!", students.length);
         // sails.log.debug("finished!", students);
         return res.json(students);
