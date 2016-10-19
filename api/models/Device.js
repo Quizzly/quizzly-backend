@@ -29,6 +29,9 @@ module.exports = {
     var type = mobileData.type;
     var deviceId = mobileData.deviceId;
 
+    sails.log.debug('handleStudentLogin student', student);
+    sails.log.debug('handleStudentLogin mobileData', mobileData);
+
     if(!student || !type || !deviceId) { return };
 
     Device.findOrCreate({
