@@ -137,18 +137,6 @@ module.exports = {
         console.log(studentAnswers);
         for(var i = 0; i < studentAnswers.length; i++) {
           var studentAnswer = studentAnswers[i];
-          if(numQuestionsInQuiz[studentAnswer.quiz.title] == undefined){
-            var questions = Question.find({
-      	        "quiz": studentAnswer.quiz.id
-      	    })
-      	    .then(function (questions){
-              console.log("questions");
-              console.log(questions);
-              numQuestionsInQuiz[studentAnswer.quiz.title] = {
-                questions: questions.length
-              };
-            })
-          }
           if(numberOfCorrectAndIncorrectAnswers[studentAnswer.quiz.title] == undefined) {
             numberOfCorrectAndIncorrectAnswers[studentAnswer.quiz.title] = {
               correct: 0,
@@ -191,6 +179,86 @@ module.exports = {
         }
         console.log(arrayNumberOfCorrectAndIncorrectAnswers);
         res.json(arrayNumberOfCorrectAndIncorrectAnswers);
+      });
+    });
+  },
+  getParticipationForStudent: function(req, res){
+    var data = req.params.all();
+    var studentId = data.studentId;
+    var courseId = data.courseId;
+    var quizTaken = {};
+    var numTaken = 0;
+    var numMissed = 0;
+    var numberOfTakenQuizzes = [];
+
+    StudentAnswer.find({student:studentId})
+    .populate('quiz')
+    .then(function(studentAnswers) {
+      for(var i = 0; i < studentAnswers.length; i++) {
+        var studentAnswer = studentAnswers[i];
+        if(quizTaken[studentAnswer.quiz.title] == undefined){
+          quizTaken[studentAnswer.quiz.title] = true;
+          numTaken++;
+        }
+      }
+      Quiz.find({course: courseId})
+        .then(function(quizzes){
+          numMissed = quizzes.length - numTaken;
+          numberOfTakenQuizzes.push({
+            "type": "Quizzes Taken",
+            "number": numTaken
+          });
+          numberOfTakenQuizzes.push({
+            "type": "Quizzes Missed",
+            "number": numMissed
+          });
+          res.json(numberOfTakenQuizzes);
+      });
+    });
+  },
+
+  sectionStudentAttendance: function(req, res){
+    var data = req.params.all();
+    // var sectionId = data.sectionId;
+    var sectionId;
+    var courseId = data.sectionId;
+    Course.find({course: courseId}).then(function(course){
+      console.log("course");
+      console.log(course);
+    });
+    var hasSection = sectionId ? "getStudentsBySectionId" : "getStudentsByCourseId";
+    StudentService.getStudentsBySectionId(data.courseId).then(function(students) {
+      Quiz.find({course: courseId}).then(function(quizzes){
+        return Promise.each(quizzes, function(quiz, i){
+          QuizAttendances.push({
+            "Name": quiz.title,
+            "Student Attendance": 0
+          });
+        }).then(function(){
+          return Promise.each(students, function(student, j){
+            return StudentAnswer.find({student: student.id})
+            .populate('quiz')
+            .then(function(studentAnswers) {
+              console.log(QuizAttendances.length);
+              for(var i = 0; i < QuizAttendances.length; i++){
+                for(var k = 0; k < studentAnswers.length; k++) {
+                  var studentAnswer = studentAnswers[k];
+                  if(studentAnswer.quiz.title == QuizAttendances[i]["Name"]){
+                    console.log(QuizAttendances);
+                    // console.log
+                    console.log(QuizAttendances[i]);
+                    QuizAttendances[i]["Student Attendance"]++;
+                    break;
+                  }
+                }
+              }
+            });
+          }).then(function(){
+            console.log("returning value");
+            console.log(QuizAttendances);
+              return res.json(QuizAttendances);
+            });
+        });
       });
     });
   }
