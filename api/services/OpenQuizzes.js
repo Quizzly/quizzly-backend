@@ -22,7 +22,7 @@ module.exports = {
 
     quiz.timeAsked = Date.now();
 
-    console.log('totalDuration', totalDuration);
+    sails.log.debug(quiz);
 
     var ttl = totalDuration + bufferTime; //ttl = time to live
     sails.log.debug('ttl', ttl);
@@ -32,7 +32,6 @@ module.exports = {
   get: function(quizKey){
     var data = quizzes.get(quizKey);
     if(!data) { return null; }
-    sails.log.debug(data);
     var quiz = JSON.parse(data);
 
     var elapsedTime = (Date.now() - quiz.timeAsked) / 1000;

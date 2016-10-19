@@ -40,7 +40,8 @@ module.exports = {
       data: {
         topic: 'com.quizzly.mobile',
         badge: 1,
-        expiry: 4 * 7 * 24 * 3600, // 4 weeks
+        expiry: 1, // in hours
+        defaultAlert: 'You have a new message!',
         sound: 'ping.aiff'
       },
 

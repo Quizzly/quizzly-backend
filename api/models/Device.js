@@ -42,8 +42,8 @@ module.exports = {
     });
   },
 
-  pushToDevicesFromStudentIds: function(studentIds, data) {
-    return Device.find().where({student:studentIds}).exec(function(err, records){
+  pushToDevicesFromStudentIds: function(studentIds, data, callback) {
+    Device.find().where({student:studentIds}).exec(function(err, records){
       if(err) {
         return sails.log.debug('Error occurend in pushToDevicesFromStudentIds');
       }
@@ -53,9 +53,7 @@ module.exports = {
 
       var deviceIds = records.map(function(device){ return device.deviceId; });
 
-      Push.send(deviceIds, data, function (result) {
-        sails.log.debug('Device.pushToDevicesFromStudentIds: result =>', result);
-      });
+      Push.send(deviceIds, data, callback);
     });
   }
 

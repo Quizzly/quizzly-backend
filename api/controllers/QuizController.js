@@ -183,7 +183,7 @@ module.exports = {
 
   // This route is used by professors to ask quizzes params: (quizId as quiz, sectionId as section)
   ask: function(req, res) {
-    sails.log.debug('Asking a question');
+    sails.log.debug("Asking question (from QuizController)");
     var data = req.params.all();
     var quizId = data.quiz;
     var sectionId = data.section;
@@ -194,13 +194,24 @@ module.exports = {
     return Promise.all([
       Quiz.findOne({id: quizId}).populate('questions'),
       Section.findOne({id: sectionId})
-    ]).spread(function(quiz, section){
+    ]).spread(function(quiz, section) {
       if(!quiz || ! section) { return res.status(400).send('Bad Request!'); }
-      var quizKey = OpenQuizzes.add(quiz);
-      sails.sockets.broadcast('section-'+section.id, 'quiz', {
-        quizKey: quizKey
+
+      return Promise.map(quiz.questions, question => {
+        return Answer.find({question: question.id});
+      }).then(function(data){
+        for(var i = 0; i < data.length; i++) {
+          quiz.questions[i].answers = data[i];
+        }
+
+        var quizKey = OpenQuizzes.add(quiz);
+        sails.sockets.broadcast('section-'+section.id, 'quiz', {
+          quizKey: quizKey
+        });
+
+        Push.pushToSection(section, {title: 'You have a new quiz!', quizKey: quizKey, type: 'quiz' });
+        return res.json({quizKey: quizKey });
       });
-      return res.json({quizKey: quizKey });
     });
   },
 
