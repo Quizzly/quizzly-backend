@@ -51,7 +51,7 @@ module.exports = {
       options: {
         cert: process.env.APN_CERT,
         key: process.env.APN_KEY,
-        production: true
+        production: false
       },
     }
   }
