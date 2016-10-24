@@ -29,6 +29,9 @@ module.exports = {
     var type = mobileData.type;
     var deviceId = mobileData.deviceId;
 
+    console.log('handleStudentLogin student', student);
+    console.log('handleStudentLogin mobileData', mobileData);
+
     if(!student || !type || !deviceId) { return };
 
     Device.findOrCreate({
