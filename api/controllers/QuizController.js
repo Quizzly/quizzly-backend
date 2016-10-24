@@ -265,5 +265,42 @@ module.exports = {
       if(err || !studentAnswer) { return res.status(400).send('something went wrong.'); }
       return res.json(studentAnswer);
     });
+  },
+
+  numberOfCorrectAnswersPerQuiz: function (req, res)
+  {
+    var data = req.params.all();
+    var quizID = data.quizId;
+    var questionsCorrectAndIncorrectForQuiz = {
+      questionsCorrect: 0,
+      questionsIncorrect: 0
+    };
+    StudentAnswer.find({quiz: quizID})
+    .populate('question')
+    .populate('answer')
+    .then(function(studentAnswers) {
+      for(var i = 0; i < studentAnswers.length; i++) {
+        console.log(studentAnswers[i].answer);
+        if(studentAnswers[i].question.type == "freeResponse") {
+          questionsCorrectAndIncorrectForQuiz.questionsCorrect++;
+        }
+        else if(studentAnswers[i].answer.correct)
+        {
+          questionsCorrectAndIncorrectForQuiz.questionsCorrect++;
+        }
+        else
+        {
+          questionsCorrectAndIncorrectForQuiz.questionsIncorrect++;
+        }
+      }
+    })
+    .done(function() {
+      var numberOfCorrectAnswers = {"Questions Correct":questionsCorrectAndIncorrectForQuiz.questionsCorrect};
+      var arrayNumberOfCorrectAnswers = [];
+      arrayNumberOfCorrectAnswers.push(numberOfCorrectAnswers);
+      res.json(arrayNumberOfCorrectAnswers); //Send the array back
+      console.log(arrayNumberOfCorrectAnswers);
+    });
   }
+
 };
