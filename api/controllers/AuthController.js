@@ -28,6 +28,10 @@ module.exports = {
       } else if(student) {
         user = student;
 
+        console.log('STUDENT LOGGING IN');
+        console.log('student', student);
+        console.log('data.mobile', data.mobile);
+
         if(data.mobile) {
           Device.handleStudentLogin(student, data.mobile);
         }
@@ -96,7 +100,7 @@ module.exports = {
         }
 
         // If signing up from mobile device and mobile data is available, register them with their device
-        if(data.isStudent == 'true' || data.isStudent == 'YES') {
+        if(data.isProfessor != 'true' && data.isProfessor != 'YES') {
           if(data.mobile) {
             Device.handleStudentLogin(user, data.mobile);
           }
@@ -105,7 +109,17 @@ module.exports = {
         sails.log.debug("signed up user", user);
         user.password = "";
         delete user.password;
-        res.json(user);
+
+        // Encode JWT
+        return JWT.encode(user, function(err, jwt){
+          if(err || !jwt) { return res.status(400).send({error: 'Error occured in logging in.'}) }
+          // Set JWT as cookie for web and return the token for mobile
+          console.log("jwt", jwt);
+          return res.cookie('jwt', jwt).json({jwt: jwt, user: user});
+        });
+
+
+        return res.cookie('jwt', jwt).json({jwt: jwt, user: user});
       });
     });
   },

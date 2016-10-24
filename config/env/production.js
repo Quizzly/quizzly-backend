@@ -10,13 +10,12 @@
  *
  */
 
-
 module.exports = {
 
   connections: {
     prodMongo: {
       adapter: 'sails-mongo',
-      url: process.env.MONGOLAB_URI
+      url: process.env.MONGODB_URI
     }
   },
 
@@ -51,7 +50,7 @@ module.exports = {
       options: {
         cert: process.env.APN_CERT,
         key: process.env.APN_KEY,
-        production: true
+        production: false
       },
     }
   }
