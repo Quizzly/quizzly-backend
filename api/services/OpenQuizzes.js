@@ -57,10 +57,15 @@ module.exports = {
       return true;
     });
 
-    quiz.questions[firstQuestionIndex].duration = firstQuestionDuration;
+    quiz.questions[firstQuestionIndex].duration = Math.floor(firstQuestionDuration);
 
     return {
       quiz: quiz
     };
+  },
+  superGet(quizKey) {
+    var data = quizzes.get(quizKey);
+    if(!data) { return null; }
+    return JSON.parse(data);
   }
 };

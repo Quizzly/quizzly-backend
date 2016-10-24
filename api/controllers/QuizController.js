@@ -205,9 +205,15 @@ module.exports = {
             questions.push(question);
           });
       }).then(function() {
-        quiz.questions = questions;
+        // Need to create new object with the data
+        // because of nested objects issue
+        let quizData = {
+          id: quiz.id,
+          title: quiz.title,
+          questions: questions
+        };
 
-        const quizKey = OpenQuizzes.add(quiz);
+        const quizKey = OpenQuizzes.add(quizData);
         sails.sockets.broadcast('section-'+section.id, 'quiz', {
           quizKey: quizKey
         });
@@ -238,7 +244,7 @@ module.exports = {
 
     if(!quizKey || !answerId || !student) { return res.status(400).send('Bad Request'); }
 
-    var quiz = OpenQuizzes.get(quizKey);
+    var quiz = OpenQuizzes.superGet(quizKey);
 
     if(!quiz ) { return res.status(401).send('Quiz Not Found!'); }
 
