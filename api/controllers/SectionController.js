@@ -219,15 +219,12 @@ module.exports = {
 
   sectionStudentAttendance: function(req, res){
     var data = req.params.all();
-    // var sectionId = data.sectionId;
-    var sectionId;
-    var courseId = data.sectionId;
-    Course.find({course: courseId}).then(function(course){
-      console.log("course");
-      console.log(course);
-    });
+    var sectionId = data.sectionId;
+    var courseId = data.courseId;
+    var QuizAttendances = [];
+    var courseOrSectionId = sectionId ? sectionId : courseId;
     var hasSection = sectionId ? "getStudentsBySectionId" : "getStudentsByCourseId";
-    StudentService.getStudentsBySectionId(data.courseId).then(function(students) {
+    StudentService[hasSection](courseOrSectionId).then(function(students) {
       Quiz.find({course: courseId}).then(function(quizzes){
         return Promise.each(quizzes, function(quiz, i){
           QuizAttendances.push({
