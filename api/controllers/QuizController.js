@@ -197,7 +197,7 @@ module.exports = {
     ]).spread(function(quiz, section) {
       if(!quiz || ! section) { return res.status(400).send('Bad Request!'); }
 
-      let questions = [];
+      var questions = [];
       return Promise.each(quiz.questions, function(question) {
         // need questions with answers populated
         return Question.findOne(question.id).populate('answers')
@@ -207,13 +207,13 @@ module.exports = {
       }).then(function() {
         // Need to create new object with the data
         // because of nested objects issue
-        let quizData = {
+        var quizData = {
           id: quiz.id,
           title: quiz.title,
           questions: questions
         };
 
-        const quizKey = OpenQuizzes.add(quizData);
+        var quizKey = OpenQuizzes.add(quizData);
         sails.sockets.broadcast('section-'+section.id, 'quiz', {
           quizKey: quizKey
         });
@@ -273,5 +273,42 @@ module.exports = {
       if(err || !studentAnswer) { return res.status(400).send('something went wrong.'); }
       return res.json(studentAnswer);
     });
+  },
+
+  numberOfCorrectAnswersPerQuiz: function (req, res)
+  {
+    var data = req.params.all();
+    var quizID = data.quizId;
+    var questionsCorrectAndIncorrectForQuiz = {
+      questionsCorrect: 0,
+      questionsIncorrect: 0
+    };
+    StudentAnswer.find({quiz: quizID})
+    .populate('question')
+    .populate('answer')
+    .then(function(studentAnswers) {
+      for(var i = 0; i < studentAnswers.length; i++) {
+        console.log(studentAnswers[i].answer);
+        if(studentAnswers[i].question.type == "freeResponse") {
+          questionsCorrectAndIncorrectForQuiz.questionsCorrect++;
+        }
+        else if(studentAnswers[i].answer.correct)
+        {
+          questionsCorrectAndIncorrectForQuiz.questionsCorrect++;
+        }
+        else
+        {
+          questionsCorrectAndIncorrectForQuiz.questionsIncorrect++;
+        }
+      }
+    })
+    .done(function() {
+      var numberOfCorrectAnswers = {"Questions Correct":questionsCorrectAndIncorrectForQuiz.questionsCorrect};
+      var arrayNumberOfCorrectAnswers = [];
+      arrayNumberOfCorrectAnswers.push(numberOfCorrectAnswers);
+      res.json(arrayNumberOfCorrectAnswers); //Send the array back
+      console.log(arrayNumberOfCorrectAnswers);
+    });
   }
+
 };
