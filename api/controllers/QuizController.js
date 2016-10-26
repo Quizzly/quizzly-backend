@@ -197,7 +197,7 @@ module.exports = {
     ]).spread(function(quiz, section) {
       if(!quiz || ! section) { return res.status(400).send('Bad Request!'); }
 
-      let questions = [];
+      var questions = [];
       return Promise.each(quiz.questions, function(question) {
         // need questions with answers populated
         return Question.findOne(question.id).populate('answers')
@@ -207,13 +207,13 @@ module.exports = {
       }).then(function() {
         // Need to create new object with the data
         // because of nested objects issue
-        let quizData = {
+        var quizData = {
           id: quiz.id,
           title: quiz.title,
           questions: questions
         };
 
-        const quizKey = OpenQuizzes.add(quizData);
+        var quizKey = OpenQuizzes.add(quizData);
         sails.sockets.broadcast('section-'+section.id, 'quiz', {
           quizKey: quizKey
         });
