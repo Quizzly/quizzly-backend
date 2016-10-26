@@ -14,15 +14,13 @@ module.exports = {
   add: function(quiz) {
     var key = uuid.v4();
 
-    var totalDuration = quiz.questions.map(function(question){
-      return question.duration;
-    }).reduce(function(pre, curr){
-      return pre + curr;
-    });
+    var totalDuration = quiz.questions.reduce(function(total, question){
+      return total + question.duration;
+    }, 0);
 
     quiz.timeAsked = Date.now();
 
-    sails.log.debug(quiz);
+    console.log('Adding Quiz to OpenQuizzes', quiz);
 
     var ttl = totalDuration + bufferTime; //ttl = time to live
     sails.log.debug('ttl', ttl);
@@ -59,10 +57,15 @@ module.exports = {
       return true;
     });
 
-    quiz.questions[firstQuestionIndex].duration = firstQuestionDuration;
+    quiz.questions[firstQuestionIndex].duration = Math.floor(firstQuestionDuration);
 
     return {
       quiz: quiz
     };
+  },
+  superGet(quizKey) {
+    var data = quizzes.get(quizKey);
+    if(!data) { return null; }
+    return JSON.parse(data);
   }
 };

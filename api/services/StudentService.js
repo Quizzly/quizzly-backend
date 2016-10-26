@@ -2,27 +2,24 @@ var Promise = require('bluebird');
 
 module.exports = {
   getStudentsBySectionId: function(sectionId) {
-    var students = [];
-    return Student.find().populate('sections').then(function (all_students) {
-          // sails.log.debug("all_students_length", all_students.length);
-          return Promise.each(all_students, function(student){
-            // sails.log.debug("all_students_length", student.sections.length);
-            for (i = 0; i < student.sections.length; i++) {
-              // sails.log.debug("section.id",section.id);
-              // sails.log.debug("student.sections[i]",student.sections[i]);
-              if (student.sections[i].id == sectionId) {
-                // sails.log.debug("YOLO");
-                students.push(student);
-                return;
-              }
-            }
-          }).then(function(){
-            return students;
-          });
-        });
+    return Section.findOne({id: sectionId}).populate('students').then(function (section) {
+      return section.students;
+    });
   },
   getStudentsByCourseId: function(courseId){
     console.log("In students");
-    return getStudentsBySectionId(courseId);
+    var all_students = [];
+    var me = this;
+    return Section.find({course: courseId}).then(function(sections){
+      return Promise.each(sections, function(section){
+        return me.getStudentsBySectionId(section.id).then(function(students){
+          all_students.push(students);
+          return;
+        });
+      }).then(function(){
+        console.log(all_students);
+        return [].concat.apply([], all_students);
+      });
+    });
   }
 };
