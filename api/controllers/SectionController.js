@@ -59,8 +59,56 @@ module.exports = {
     var data = req.params.all();
     var sectionId = data.sectionId;
     var quizId = data.quizId;
+    var allStudents = {};
     var correctStudentAnswers = {};
 
+    Student.find({section: sectionId})
+    .then(function(students) {
+      console.log(students);
+      for(var i = 0; i < students.length; i++)
+      {
+        if(allStudents[students[i].id] == undefined)
+        {
+          allStudents[students[i]] =
+          {
+            name: students[i].firstName, // Change to ID in future?
+            correct: 0
+          };
+        }
+      }
+      .then(function() {
+        StudentAnswer.find({section: sectionId, quiz:quizId})
+        .populate('student')
+        .populate('answer')
+        .then(function(studentAnswers) {
+          console.log(studentAnswers);
+          for(var i = 0; i < studentAnswers.length; i++)
+          {
+            if(studentAnswer.question.type == "freeResponse")
+            {
+              allStudents[studentAnswers.student.id].correct++;
+            }
+            else
+            {
+              if(studentAnswer.answer.correct)
+              {
+                allStudents[studentAnswers.student.id].correct++
+              }
+            }
+          }
+        });
+      })
+    })
+    .done(function() {
+      var allStudentsArray = [];
+      for(var student in allStudents)
+      {
+        var studentQuizResult = {"Name": allStudents[student.id].name, "Questions Correct":allStudents[student.id].correct};
+        allStudentsArray.push(studentQuizResult);
+      }
+  });
+
+    /*
     StudentAnswer.find({section: sectionId, quiz: quizId})
     .populate('question')
     .populate('student') //Take the ObjectId of the linked student model and replace it with the object corresponding to that ObjectId
@@ -93,6 +141,7 @@ module.exports = {
       }
       res.json(correctAnswers); //Send the array back
     });
+    */
   },
 
   numberOfCorrectAndIncorrectAnswersForStudent: function(req, res) {
