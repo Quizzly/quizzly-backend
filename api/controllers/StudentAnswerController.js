@@ -10,8 +10,7 @@ module.exports = {
 	getMetrics: function(req, res){
 		var allQuestions = StudentAnswer.find({
       student: req.param('student'),
-      quiz: req.param('quiz'),
-      section: req.param('section')
+      quiz: req.param('quiz')
 		})
 		.populate('answer')
 		.then(function(studentanswers){
