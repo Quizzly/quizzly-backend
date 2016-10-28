@@ -61,22 +61,24 @@ module.exports = {
     var quizId = data.quizId;
     var allStudents = {};
     var correctStudentAnswers = {};
-
-    Student.find({section: sectionId})
-    .then(function(students) {
-      console.log(students);
-      for(var i = 0; i < students.length; i++)
+    Section.findOne({id: sectionId})
+    .populate('students')
+    .then(function(section){
+      // console.log(section);
+      for(var i = 0; i < section.students.length; i++)
       {
-          allStudents[students[i].id] = {
-            name: students[i].firstName, // Change to ID in future?
+          allStudents[section.students[i].id] = {
+            name: section.students[i].firstName, // Change to ID in future?
             correct: 0
           };
       }
+      console.log(allStudents);
       StudentAnswer.find({section: sectionId, quiz:quizId})
         .populate('student')
         .populate('answer')
+        .populate('question')
         .then(function(studentAnswers) {
-          console.log(studentAnswers);
+          // console.log(studentAnswers);
           for(var i = 0; i < studentAnswers.length; i++)
           {
             var studentAnswer = studentAnswers[i];
@@ -95,9 +97,11 @@ module.exports = {
         var allStudentsArray = [];
         for(var student in allStudents)
         {
-          var studentQuizResult = {"Name": allStudents[student.id].name, "Questions Correct":allStudents[student.id].correct};
+          console.log(student);
+          var studentQuizResult = {"Name": allStudents[student].name, "Questions Correct":allStudents[student].correct};
           allStudentsArray.push(studentQuizResult);
         }
+        res.json(allStudentsArray);
       });
   });
 
