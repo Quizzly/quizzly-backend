@@ -78,7 +78,9 @@ module.exports = {
         .populate('answer')
         .populate('question')
         .then(function(studentAnswers) {
-          // console.log(studentAnswers);
+          console.log(studentAnswers);
+          console.log(sectionId);
+          console.log(quizId);
           for(var i = 0; i < studentAnswers.length; i++)
           {
             var studentAnswer = studentAnswers[i];
