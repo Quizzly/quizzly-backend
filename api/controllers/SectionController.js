@@ -82,6 +82,7 @@ module.exports = {
           for(var i = 0; i < studentAnswers.length; i++)
           {
             var studentAnswer = studentAnswers[i];
+            console.log(studentAnswer);
             if(studentAnswer.question.type == "freeResponse")
             {
               allStudents[studentAnswer.student.id].correct++;
@@ -94,6 +95,7 @@ module.exports = {
               }
             }
           }
+          console.log(allStudents);
         var allStudentsArray = [];
         for(var student in allStudents)
         {
