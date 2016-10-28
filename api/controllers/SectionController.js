@@ -67,45 +67,38 @@ module.exports = {
       console.log(students);
       for(var i = 0; i < students.length; i++)
       {
-        if(allStudents[students[i].id] == undefined)
-        {
-          allStudents[students[i]] =
-          {
+          allStudents[students[i].id] = {
             name: students[i].firstName, // Change to ID in future?
             correct: 0
           };
-        }
       }
-      .then(function() {
-        StudentAnswer.find({section: sectionId, quiz:quizId})
+      StudentAnswer.find({section: sectionId, quiz:quizId})
         .populate('student')
         .populate('answer')
         .then(function(studentAnswers) {
           console.log(studentAnswers);
           for(var i = 0; i < studentAnswers.length; i++)
           {
+            var studentAnswer = studentAnswers[i];
             if(studentAnswer.question.type == "freeResponse")
             {
-              allStudents[studentAnswers.student.id].correct++;
+              allStudents[studentAnswer.student.id].correct++;
             }
             else
             {
               if(studentAnswer.answer.correct)
               {
-                allStudents[studentAnswers.student.id].correct++
+                allStudents[studentAnswer.student.id].correct++
               }
             }
           }
-        });
-      })
-    })
-    .done(function() {
-      var allStudentsArray = [];
-      for(var student in allStudents)
-      {
-        var studentQuizResult = {"Name": allStudents[student.id].name, "Questions Correct":allStudents[student.id].correct};
-        allStudentsArray.push(studentQuizResult);
-      }
+        var allStudentsArray = [];
+        for(var student in allStudents)
+        {
+          var studentQuizResult = {"Name": allStudents[student.id].name, "Questions Correct":allStudents[student.id].correct};
+          allStudentsArray.push(studentQuizResult);
+        }
+      });
   });
 
     /*
@@ -206,7 +199,6 @@ module.exports = {
               }
             }
           }
-        }).then(function() {
           console.log("here");
           console.log(numQuestionsInQuiz);
           for(var quiz in numQuestionsInQuiz){
