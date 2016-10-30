@@ -193,10 +193,9 @@ module.exports = {
     // Find the question and section and make sure they exists
     return Promise.all([
       Quiz.findOne({id: quizId}).populate('questions'),
-      Section.findOne({id: sectionId})
+      Section.findOne({id: sectionId}).populate('course')
     ]).spread(function(quiz, section) {
       if(!quiz || ! section) { return res.status(400).send('Bad Request!'); }
-
       var questions = [];
       return Promise.each(quiz.questions, function(question) {
         // need questions with answers populated
@@ -210,7 +209,8 @@ module.exports = {
         var quizData = {
           id: quiz.id,
           title: quiz.title,
-          questions: questions
+          questions: questions,
+          section: section
         };
 
         var quizKey = OpenQuizzes.add(quizData);
@@ -266,6 +266,8 @@ module.exports = {
       student: student.id,
       question: question.id,
       quiz: quiz.id,
+      section: quiz.section.id,
+      course: quiz.section.course.id,
       answer: answerId
     };
 
