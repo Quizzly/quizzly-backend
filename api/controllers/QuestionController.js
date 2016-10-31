@@ -109,7 +109,7 @@ module.exports = {
     var text = data.text;
     var student = req.user;
 
-    if(!questionKey || !answerId || !student) { return res.status(400).send('Bad Request'); }
+    if(!questionKey || (!answerId && !text) || !student) { return res.status(400).send('Bad Request'); }
 
     var questionData = OpenQuestions.get(questionKey);
 

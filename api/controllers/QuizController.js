@@ -243,7 +243,7 @@ module.exports = {
     var answerId = data.answer;
     var student = req.user;
 
-    if(!quizKey || !answerId || !student) { return res.status(400).send('Bad Request'); }
+    if(!quizKey || (!answerId && !text) || !student) { return res.status(400).send('Bad Request'); }
 
     var quiz = OpenQuizzes.superGet(quizKey);
 
