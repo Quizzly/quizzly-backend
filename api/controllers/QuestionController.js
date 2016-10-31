@@ -106,6 +106,7 @@ module.exports = {
     var data = req.params.all();
     var questionKey = data.questionKey;
     var answerId = data.answer;
+    var text = data.text;
     var student = req.user;
 
     if(!questionKey || !answerId || !student) { return res.status(400).send('Bad Request'); }
@@ -120,6 +121,7 @@ module.exports = {
       quiz: questionData.question.quiz.id,
       section: questionData.question.section.id,
       course: questionData.question.section.course.id,
+      text: text,
       answer: answerId
     };
 

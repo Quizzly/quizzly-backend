@@ -239,6 +239,7 @@ module.exports = {
     var data = req.params.all();
     var quizKey = data.quizKey;
     var questionId = data.question;
+    var text = data.text;
     var answerId = data.answer;
     var student = req.user;
 
@@ -268,7 +269,8 @@ module.exports = {
       quiz: quiz.id,
       section: quiz.section.id,
       course: quiz.section.course.id,
-      answer: answerId
+      answer: answerId,
+      text: text
     };
 
     StudentAnswer.create(data).exec(function(err, studentAnswer){
