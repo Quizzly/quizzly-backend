@@ -79,7 +79,7 @@ module.exports = {
           // sails.log.debug("all_students_length", all_students.length);
           return Promise.each(all_students, function(student){
             // sails.log.debug("all_students_length", student.sections.length);
-            for (i = 0; i < student.sections.length; i++) {
+            for (var i = 0; i < student.sections.length; i++) {
               // sails.log.debug("section.id",section.id);
               // sails.log.debug("student.sections[i]",student.sections[i]);
               if (student.sections[i].id == section.id) {
