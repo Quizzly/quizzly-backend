@@ -10,6 +10,26 @@
  var Promise = require("bluebird");
 
 module.exports = {
+  duplicateQuiz: function(req, res) {
+    var data = req.params.all();
+    var quizIn = data.quiz;
+    Quiz.create({title: quizIn.title, course: quizIn.course.id}).then(function(quiz){
+      return Promise.each(quizIn.questions, function(original_question){
+        return Question.create({text: original_question.text, type: original_question.type, quiz: quiz.id}).then(function(question){
+          return Answer.find({question: original_question.id}).then(function(answers){
+            return Promise.each(answers, function(answer){
+              return Answer.create({text: answer.text, correct: answer.correct, option: answer.option, question: question.id})
+              .then(function(answer){
+                console.log(answer);
+              });
+            });
+          });
+        });
+      }).then(function(){
+        res.json(quiz);
+      });
+    });
+  },
   destroyQuizzesByIds: function(req, res) {
     var data = req.params.all();
     Quiz.destroy({id: data.ids}).exec(function(err, quizzes) {
