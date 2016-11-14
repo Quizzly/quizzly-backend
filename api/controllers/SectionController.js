@@ -302,6 +302,15 @@ module.exports = {
         });
       });
     });
+  },
+
+  getEmailsById: function(req, res){
+    var data = req.params.all();
+    Section.findOne({section: data.section}).populate('students').then(function(section){
+      var students = [];
+      students = section.students;
+      res.json(students);
+    })
   }
 
 };
