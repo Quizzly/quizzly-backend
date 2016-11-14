@@ -59,8 +59,11 @@ module.exports = {
 
     quiz.questions[firstQuestionIndex].duration = Math.floor(firstQuestionDuration);
 
+    const totalTimeRemaining = quiz.questions.reduce((total, question) => total+question.duration, 0);
+
     return {
-      quiz: quiz
+      quiz: quiz,
+      timeRemaining: totalTimeRemaining
     };
   },
   superGet(quizKey) {
