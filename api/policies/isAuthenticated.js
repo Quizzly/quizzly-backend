@@ -11,7 +11,16 @@
 var Promise = require('bluebird');
 
 module.exports = function(req, res, next) {
-  var jwt = req.cookies.jwt || req.body.jwt ;
+  let jwt = null;
+
+  if(req.cookies && req.cookies.jwt) {
+    jwt = req.cookies.jwt;
+  }
+
+  if(req.body && req.body.jwt) {
+    jwt = req.body.jwt;
+  }
+
   if(!jwt) { return res.status(401).send('Not Authorized.'); }
   return JWT.decode(jwt, function(err, decoded){
     if(err || !decoded) { return res.status(401).send('Not Authorized.'); }
