@@ -19,6 +19,7 @@ module.exports = {
 	        "quiz": req.param('quiz')
 	    })
 			.populate('answers')
+			.populate('quiz')
 	    .then(function (questions){
 				//creating map of studentanswers
 				var studentanswersmap = {};
@@ -38,6 +39,7 @@ module.exports = {
 								if((studentanswer.answer.id == questions[i].answers[j].id) && (studentanswer.answer.correct == false)){
 									console.log("here");
 									questions[i].answers[j].studentSelectedIncorrect = true;
+									questions[i].incorrect = true;
 									countIncorrect++;
 									break;
 								}
@@ -54,6 +56,7 @@ module.exports = {
 					}
 				}
 				var object = {
+					quiz: questions[0].quiz.title,
 					questions: questions,
 					size: questions.length,
 					countIncorrect: countIncorrect,
