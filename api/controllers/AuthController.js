@@ -52,7 +52,7 @@ module.exports = {
           if(err || !jwt) { return res.status(400).send({error: 'Error occured in logging in.'}) }
           // Set JWT as cookie for web and return the token for mobile
           console.log("jwt", jwt);
-          return res.cookie('jwt', jwt, { httpOnly: true, Path: "/" }).json({jwt: jwt, user: user});
+          return res.cookie('jwt', jwt, { httpOnly: true}).json({jwt: jwt, user: user});
         });
       });
     }).catch(function(err){
@@ -115,13 +115,13 @@ module.exports = {
           if(err || !jwt) { return res.status(400).send({error: 'Error occured in logging in.'}) }
           // Set JWT as cookie for web and return the token for mobile
           console.log("jwt", jwt);
-          return res.cookie('jwt', jwt, { httpOnly: true, Path: "/" }).json({jwt: jwt, user: user});
+          return res.cookie('jwt', jwt, { httpOnly: true}).json({jwt: jwt, user: user});
         });
       });
     });
   },
   logout: function(req, res) {
-    return res.cookie('jwt', '', { httpOnly: true, Path: "/" }).ok();
+    return res.cookie('jwt', '', { httpOnly: true}).ok();
   },
   isStudentTest: function(req, res) {
     return res.json(req.user);
