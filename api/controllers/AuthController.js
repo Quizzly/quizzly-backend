@@ -52,7 +52,7 @@ module.exports = {
           if(err || !jwt) { return res.status(400).send({error: 'Error occured in logging in.'}) }
           // Set JWT as cookie for web and return the token for mobile
           console.log("jwt", jwt);
-          return res.cookie('jwt', jwt).json({jwt: jwt, user: user}, { httpOnly: true, Path: "/" });
+          return res.cookie('jwt', jwt, { httpOnly: true, Path: "/" }).json({jwt: jwt, user: user});
         });
       });
     }).catch(function(err){
@@ -115,7 +115,7 @@ module.exports = {
           if(err || !jwt) { return res.status(400).send({error: 'Error occured in logging in.'}) }
           // Set JWT as cookie for web and return the token for mobile
           console.log("jwt", jwt);
-          return res.cookie('jwt', jwt).json({jwt: jwt, user: user}, { httpOnly: true, Path: "/" });
+          return res.cookie('jwt', jwt, { httpOnly: true, Path: "/" }).json({jwt: jwt, user: user});
         });
       });
     });
