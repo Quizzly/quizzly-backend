@@ -19,7 +19,7 @@ module.exports = {
     note.sound = settings.apn.data.sound;
     note.alert = data.title || settings.apn.data.defaultAlert;
     note.payload = data;
-    note.topic = settings.apn.gateway;
+    note.topic = settings.apn.topic;
 
     return apnProvider.send(note, deviceIds).then(callback);
 
@@ -37,6 +37,6 @@ module.exports = {
 
       return Device.pushToDevicesFromStudentIds(studentIds, data, callback);
     });
-    
+
   }
 };
