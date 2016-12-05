@@ -10,6 +10,8 @@ var apn = require('apn');
 var settings = sails.config.pushSettings;
 var apnProvider = new apn.Provider(settings.apn.options);
 
+console.log('Push Settings', settings);
+
 module.exports = {
   send: function(deviceIds, data, callback) {
 
