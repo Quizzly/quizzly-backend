@@ -9,6 +9,8 @@
  * any private information to this file!
  *
  */
+ 
+require('dotenv').config();
 
 module.exports = {
 
