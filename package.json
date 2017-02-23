@@ -16,6 +16,7 @@
     "chart.js": "^1.0.2",
     "csv": "^0.4.6",
     "db-migrate": "^0.10.0-beta.20",
+    "db-migrate-mysql": "^1.1.10",
     "dotenv": "^4.0.0",
     "ejs": "2.3.4",
     "grunt": "0.4.5",
