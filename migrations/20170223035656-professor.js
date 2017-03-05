@@ -22,6 +22,7 @@ exports.up = function (db, callback) {
       password: 'string',
       firstName: 'string',
       lastName: 'string',
+      type: 'string',
       isEmailValidated: 'boolean',
       facultyId: 'string',
       school: 'string',

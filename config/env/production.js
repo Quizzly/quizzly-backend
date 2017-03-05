@@ -14,15 +14,20 @@ require('dotenv').config();
 
 module.exports = {
 
-  connections: {
-    prodMongo: {
-      adapter: 'sails-mongo',
-      url: process.env.MONGODB_URI
-    }
-  },
+  // connections: {
+  //   // prodMongo: {
+  //   //   adapter: 'sails-mongo',
+  //   //   url: process.env.MONGODB_URI
+  //   // }
+  //   // prodMySQL: {
+  //   //   adapter: 'sails-mysql',
+  //   //   host: process.env.MYSQL_HOST,
+      
+  //   // }
+  // },
 
   models: {
-    connection: 'prodMongo'
+    connection: 'prodMySQL'
   },
 
   pushSettings: {

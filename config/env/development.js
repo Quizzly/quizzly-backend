@@ -18,9 +18,20 @@ module.exports = {
    * Set the default database connection for models in the development       *
    * environment (see config/connections.js and config/models.js )           *
    ***************************************************************************/
+   connections: {
+      prodMySql:{
+        adapter    : 'sails-mysql',
+        url       : 'mysql2://quizzlies:millerhorsebatterysjacob@quizzlydevdb.cc29npoa6anh.us-west-2.rds.amazonaws.com:3306/quizzlydev'
+      }
+   },
+
 
   models: {
-    connection: 'someMongodbServer'
+    // prodMongo: {
+    //   adapter: 'sails-mongo',
+    //   url: process.env.MONGODB_URI
+    // }
+    // connection: 'prodMySql'
   },
 
   pushSettings: {

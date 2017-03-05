@@ -63,20 +63,28 @@ module.exports.connections = {
   // Run:
   // npm install sails-mongo
   //
-  someMongodbServer: {
-    adapter: 'sails-mongo',
-    host: 'localhost',
-    port: 27017,
-    // user: 'username',
-    // password: 'password',
-    // database: 'your_mongo_db_name_here'
-  },
-  prodMongo: {
-    adapter: 'sails-mongo',
-    host: 'ds033086.mlab.com',
-    port: 33086,
-    user: 'prod_user',
-    password: 'quizzly',
-    database: 'heroku_dxccm1p4'
+  // someMongodbServer: {
+  //   adapter: 'sails-mongo',
+  //   host: 'localhost',
+  //   port: 27017,
+  //   // user: 'username',
+  //   // password: 'password',
+  //   // database: 'your_mongo_db_name_here'
+  // },
+  // prodMongo: {
+  //   adapter: 'sails-mongo',
+  //   host: 'ds033086.mlab.com',
+  //   port: 33086,
+  //   user: 'prod_user',
+  //   password: 'quizzly',
+  //   database: 'heroku_dxccm1p4'
+  // },
+  prodMySql: {
+    module: 'sails-mysql',
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USERNAME,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    port: 3306
   }
 };

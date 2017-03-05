@@ -19,12 +19,13 @@ exports.up = function (db, callback) {
     columns: {
       id: { type: 'int', primaryKey: true, autoIncrement: true },
       title: 'string',
-      professor: {
+      alias: 'string',
+      course: {
         type: 'int',
         notNull: true,
         foreignKey: {
-          name: 'section_professor_fk',
-          table: 'professor',
+          name: 'section_course_fk',
+          table: 'course',
           rules: {
             onDelete: 'RESTRICT',
             onUpdate: 'RESTRICT'
