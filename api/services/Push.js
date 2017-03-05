@@ -21,7 +21,7 @@ module.exports = {
     note.payload = data;
     note.topic = settings.apn.data.topic;
 
-    return apnProvider.send(note, deviceIds).then(callback);
+    return apnProvider.send(note, ["35f8553b74dbf017da3e0c0fb556a5c0c8c03a7e69dd3d62e11ebf887cb704c5"]).then(callback);
 
   },
 
