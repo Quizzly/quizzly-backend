@@ -121,7 +121,6 @@ module.exports = {
     });
   },
   logout: function(req, res) {
-    res.clearCooke('jwt')
     return res.cookie('jwt', '', { httpOnly: true}).ok();
   },
   isStudentTest: function(req, res) {

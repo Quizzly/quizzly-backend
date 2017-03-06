@@ -19,7 +19,7 @@ exports.up = function (db, callback) {
     columns: {
       id: { type: 'int', primaryKey: true, autoIncrement: true },
       email: 'string',
-      password: 'string',
+      password: 'text',
       firstName: 'string',
       lastName: 'string',
       type: 'string',
