@@ -33,7 +33,8 @@ exports.up = function (db, callback) {
 	        },
 	        mapping: 'id'
 	    }
-      },      
+      },
+      lastAsked: {type: 'date'},     
       createdAt: {type: 'date'},
       updatedAt: {type: 'date'}  // shorthand notation
     },

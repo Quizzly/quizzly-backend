@@ -23,7 +23,7 @@ module.exports = {
       defaultsTo: false
     },
     password: {
-      type: 'string',
+      type: 'text',
       required: true
     },
     studentId: {

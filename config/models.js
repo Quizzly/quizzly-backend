@@ -15,5 +15,5 @@ module.exports.models = {
   connection: 'prodMySql',
   /*need to run npm install sails-memory (follow guide)*/
   // connection: 'memory',
-  migrate: 'safe'
+  migrate: 'alter'
 };

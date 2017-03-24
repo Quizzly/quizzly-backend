@@ -19,7 +19,7 @@ exports.up = function(db, callback) {
 };
 
 exports.down = function(db, callback) {
-  return null;
+  	callback();
 };
 
 exports._meta = {

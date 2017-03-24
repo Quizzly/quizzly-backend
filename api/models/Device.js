@@ -36,7 +36,8 @@ module.exports = {
 
     Device.findOrCreate({
       deviceId: deviceId,
-      type: type
+      type: type,
+      student: student,
     }).exec(function(err, record) {
       if(err) { return sails.log.error(err); }
       record.student = student;
