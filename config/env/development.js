@@ -21,7 +21,7 @@ module.exports = {
    connections: {
       prodMySql:{
         adapter    : 'sails-mysql',
-        url       : 'mysql2://quizzlies:millerhorsebatterysjacob@quizzlydevdb.cc29npoa6anh.us-west-2.rds.amazonaws.com:3306/quizzlydev'
+        url       : process.env.MYSQL_URI,
       }
    },
 
