@@ -51,7 +51,7 @@ module.exports = {
     // Apple
     apn: {
       data: {
-        topic: 'com.quizzly.mobile',
+        topic: 'edu.usc.quizzly',
         badge: 1,
         expiry: 1, // in hours
         defaultAlert: 'You have a new message!',

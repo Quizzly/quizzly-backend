@@ -12,7 +12,12 @@ var bufferTime = 1;
 
 module.exports = {
   add: function(question) {
-    var key = uuid.v4();
+    // Generate a random unique identifier as the key to view the asked question
+    // var key = uuid.v4();
+
+    // Scratch that, just use its id as the key so students can open the asked question manually
+    // May revert for future security features (e.g. push to bluetooth groups)
+    var key = question.id;
     var ttl = question.duration + bufferTime; //ttl = time to live
     questions.set(key, JSON.stringify(question), ttl);
     return key;
