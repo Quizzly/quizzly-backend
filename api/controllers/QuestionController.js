@@ -76,7 +76,9 @@ module.exports = {
       Section.findOne({id: sectionId}).populate('course')
     ]).spread(function(question, section){
       if(!question || ! section) { return res.status(400).send('Bad Request!'); }
+      Question.update({id: questionId}, {lastAsked: new Date()}).exec(function(err, questions){}); // update lastAsked
       question.section = section; // include the section
+      question.lastAsked = new Date();
       var questionKey = OpenQuestions.add(question);
       sails.sockets.broadcast('section-'+section.id, 'question', {
         questionKey: questionKey

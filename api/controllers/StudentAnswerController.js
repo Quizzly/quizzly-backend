@@ -23,8 +23,13 @@ module.exports = {
 	    .then(function (questions){
 				//creating map of studentanswers
 				var studentanswersmap = {};
-				for(var i = 0; i < studentanswers.length; i++){
-					studentanswersmap[studentanswers[i].question] = studentanswers[i];
+				for(var i = studentanswers.length-1; i >= 0; i--) {
+					// Start from end, keep only the latest answer
+					if (studentanswers[i].question in studentanswersmap) {
+						studentanswers.splice(i, 1);
+					} else {
+						studentanswersmap[studentanswers[i].question] = studentanswers[i];
+					}
 				}
 				console.log("Over here: ");
 				console.log(studentanswersmap);
