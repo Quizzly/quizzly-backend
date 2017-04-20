@@ -47,6 +47,9 @@ module.exports.routes = {
   'post /createLecture': 'LectureController.createLecture',
   'post /full/lectures': 'LectureController.fullLectures',
 
+  'get /metrics/:section/:question': 'PowerpointController.returnGraph',
+  'post /time': 'Timer.returnTime',
+
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *
